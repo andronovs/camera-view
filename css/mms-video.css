@@ -1,0 +1,35 @@
+.parent2 {
+	display: flex; 
+	flex-direction: row; 
+	flex-wrap: wrap; 
+	justify-content: flex-start; 
+	align-items: flex-start; 
+	align-content: flex-start;
+}
+
+.parent {
+	display: flex; 
+	border: 2px solid red; 
+	flex-flow: row wrap;
+	justify-content: space-around;
+}
+
+.child {
+	width: 150px; 
+	height: 100px; 
+	border: 2px solid green; 
+	margin: auto;
+	background-image: url("../img/no-preview-available.png");
+}
+
+div.del {
+    position: absolute;
+    right: 0;
+    width: 35px;
+    height: 35px;
+    background: rgba(255, 255, 255, 0.5);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+}

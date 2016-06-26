@@ -1,0 +1,23 @@
+{
+  "name": "camera-view",
+  "version": "1.0.0",
+  "description": "Source code for the camera-view demo web site.",
+  "engines": {
+    "node": ">=0.10.0",
+    "npm": ">=2.1.5"    
+  },
+  "main": "app.js",
+  "scripts": {
+    "start": "http-server -a 0.0.0.0 -p 8000"
+  },
+  "author": "Sergiy Andronov",
+  "license": "ISC",
+  "keywords": [
+    "camera",
+    "view"
+  ],  
+  "dependencies": {
+    "express": "^4.11.2",
+    "gzippo": "^0.2.0"
+  }
+}
