@@ -10,9 +10,9 @@ var cameraDialog = (function() {
 		var cameraDialog = $( "#" + cameraDialogId ); 
 		cameraDialog.css( "display", ""); 
 
-		var captureSnapshotBtn = cameraDialog.find("#captureSnapshotId")[0]; 
-		var saveAndCloseBtn = cameraDialog.find("#saveAndCloseId")[0]; 
-		var cancelBtn = cameraDialog.find("#cancelId")[0]; 
+		var captureSnapshotBtn = cameraDialog.find("#captureSnapshotId"); 
+		var saveAndCloseBtn = cameraDialog.find("#saveAndCloseId"); 
+		var cancelBtn = cameraDialog.find("#cancelId"); 
 
 		//console.log("displayCameraDialog():", captureSnapshotBtn, saveAndCloseBtn, cancelBtn); 
 
