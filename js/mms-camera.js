@@ -10,9 +10,9 @@ var cameraDialog = (function() {
 		var cameraDialog = $( "#" + cameraDialogId ); 
 		cameraDialog.css( "display", ""); 
 
-		var captureSnapshotBtn = cameraDialog.find("#captureSnapshotId"); 
-		var saveAndCloseBtn = cameraDialog.find("#saveAndCloseId"); 
-		var cancelBtn = cameraDialog.find("#cancelId"); 
+		var captureSnapshotBtn = cameraDialog.find("#captureSnapshotId")[0]; 
+		var saveAndCloseBtn = cameraDialog.find("#saveAndCloseId")[0]; 
+		var cancelBtn = cameraDialog.find("#cancelId")[0]; 
 
 		//console.log("displayCameraDialog():", captureSnapshotBtn, saveAndCloseBtn, cancelBtn); 
 
@@ -21,8 +21,8 @@ var cameraDialog = (function() {
 		saveAndCloseBtn.click(saveAndClose); 
 		cancelBtn.click(cancel); 
 
-		video = cameraDialog.find("#dataVideoId");
-		canvas = cameraDialog.find("#canvasId");
+		video = cameraDialog.find("#dataVideoId")[0];
+		canvas = cameraDialog.find("#canvasId")[0];
 
 		console.log("displayCameraDialog():", cameraDialog, video, canvas); 
 
