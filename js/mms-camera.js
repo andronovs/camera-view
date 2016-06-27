@@ -9,23 +9,27 @@ var cameraDialog = (function() {
 
 	function displayCameraDialog(cameraDialogId, cameraId, containerId, saveSnapshotCallback) {
 
-		camId = cameraId; 
-		contId = containerId; 
-		callback = saveSnapshotCallback; 
+		console.log("displayCameraDialog():", dialog, camId, contId, callback); 
 
 		var cameraDialog = $( "#" + cameraDialogId ); 
 		cameraDialog.css( "display", ""); 
 
-		var captureSnapshotBtn = cameraDialog.find("#captureSnapshotId"); 
-		var saveAndCloseBtn = cameraDialog.find("#saveAndCloseId"); 
-		var cancelBtn = cameraDialog.find("#cancelId");  
- 
-		captureSnapshotBtn.click(captureSnapshot); 
-		saveAndCloseBtn.click(saveAndClose); 
-		cancelBtn.click(cancel); 
+		if (!dialog) {
+			camId = cameraId; 
+			contId = containerId; 
+			callback = saveSnapshotCallback; 
 
-		video = cameraDialog.find("#dataVideoId")[0];
-		canvas = cameraDialog.find("#canvasId")[0];
+			var captureSnapshotBtn = cameraDialog.find("#captureSnapshotId"); 
+			var saveAndCloseBtn = cameraDialog.find("#saveAndCloseId"); 
+			var cancelBtn = cameraDialog.find("#cancelId");  
+	 
+			captureSnapshotBtn.click(captureSnapshot); 
+			saveAndCloseBtn.click(saveAndClose); 
+			cancelBtn.click(cancel); 
+
+			video = cameraDialog.find("#dataVideoId")[0];
+			canvas = cameraDialog.find("#canvasId")[0];
+		}
 
 		console.log("displayCameraDialog():", cameraDialog, video, canvas); 
 		
@@ -37,7 +41,7 @@ var cameraDialog = (function() {
 		    width: 800,
 		    height: 420, 
 		    modal: true 
-		});
+		}); 
 
         navigator.mediaDevices.getUserMedia(constraints)
 		.then(function (stream) {
