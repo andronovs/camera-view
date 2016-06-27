@@ -39,30 +39,13 @@
 
 	<script>
 		var photoSize = { width: 150, height: 100 }; 
-		//var cameraResolution = { width: 380, height: 260 }; 
-		//var dialog; 
-
-		//var video, canvas; 
-		//var constraints = { video: true, audio: false }; 
 
 		$(init);
 
 		function init() {
 
 			//dummyImages.addToIndexedDB(); 
-			//populateImagesList(); 
 			configureCameras(['camera1', 'camera2', 'camera3']); 
-
-			$("#addPhotoIOS").change(handleFileSelect); 
-
-			//var iOS = ['iPad', 'iPhone', 'iPod'].indexOf(navigator.platform) >= 0; 
-			var iOS = utils.isIOS(); 
-			console.log("iOS", iOS); 
-			var getDisplayValue = function(isVisible) {
-				return isVisible? "" : "none"; 
-			}; 
-			$("#addPhotoIOS").css("display", getDisplayValue(iOS)); 
-			$("#addPhoto").css("display", getDisplayValue(!iOS)); 
 		} 
 
 		function handleFileSelect(evt) {
@@ -86,37 +69,36 @@
 			reader.readAsDataURL(f);
 		}
 
-		function populateImagesList() { 
-			// populate the list of test dummy images 
-			myIndexedDB.getImages().then(function(images) { 
+		function populateImagesList(listId, cameraId) { 
+			// populate the list of all images for given camera  
+			myIndexedDB.findByCameraId(cameraId).then(function(images) { 
 
-			    var imagesDiv = $("#dummyImages"); 
+			    /*var imagesDiv = $("#" + listId); 
 			    if (images.length == 0) {
 			    	imagesDiv.append($("<div>There are no images in the local IndexedDB database.</div>")); 
-			    }
+			    }*/
 
-			    $.each(images, function() {
-					//console.log("image=", this); 
-					addImageToList("dummyImages", this); 
+			    $.each(images, function() { 
+					addImageToList(listId, this); 
 				}); 
 			}); 
 		}
 
 		function addImageToList(listId, imageObject) {
 
-			//var imagesDiv = $("#dummyImages");
 			var imagesDiv = $("#" + listId);
-			imagesDiv.html(''); 
 			var imgDiv = $('<div />').addClass("img").css("height", photoSize.height + "px"); 
 			var delDiv = $('<div />').addClass("del").attr("data-id", imageObject.fileName); 
 			var icon = $('<i aria-hidden="true" />').addClass("fa fa-trash-o"); 
 
-			delDiv.append(icon); 
+			delDiv.append(icon);
+
+			console.log("addImageToList(): configuring", imageObject);  
 			
 			delDiv.click(function(evt) { 
 			    evt.stopPropagation(); 
 
-			    var imageId = $(imageObject).attr("data-id"); 
+			    var imageId = imageObject.fileName; 
 		        if (confirm('Are you sure?') == true) {
 		            console.log("Deleting():", imageId); 
 
@@ -134,100 +116,47 @@
 			imagesDiv.append(imgDiv); 
 		}
 
-		function saveSnapshot() {
-			console.log("saveSnapshot()..."); 
+		function saveSnapshot(cameraId, listId, imgData) {
+			console.log("saveSnapshot()...", listId, imgData.length); 
 
-			var imgData = canvas.toDataURL("image/png");
-			var imgObject = { fileName: newGuid() + ".png", dateTaken: new Date(), content: imgData };
-			addImageToList("dummyImages", imgObject); 
-		}
-/*
-		function displayCameraDialog() {
-			$( "#camera-dialog" ).css( "display", "");
+			var fileName = utils.newGuid() + ".png"; 
+			var dateTaken = new Date(); 
+			var imgObject = { fileName: fileName, dateTaken: dateTaken, content: imgData, cameraId: cameraId };
 
-			video = document.getElementById("dataVideoId"); 
-			canvas = document.getElementById("canvasId");
-			
-			dialog = $( "#camera-dialog" )
-			.data("saveSnapshotHandler", saveSnapshot)
-			.dialog({
-				maxWidth: 800,
-				maxHeight: 420,
-			    width: 800,
-			    height: 420, 
-			    modal: true 
-			});
+			myIndexedDB.addImage(fileName, cameraId, dateTaken, imgData);
 
-            navigator.mediaDevices.getUserMedia(constraints)
-    		.then(function (stream) {
-			    console.log("getUserMedia(): video=", video); 
-			    video.src = window.URL.createObjectURL(stream); 
-			})
-			.catch(function (error) {
-			 	console.log('navigator.getUserMedia error: ', error);
-			});
-		}
+			addImageToList(listId, imgObject); 
+		}  
 
-	    function captureSnapshot() { 
-	        console.log("captureSnapshot()..."); 
+		function configureCameras(cameraIds) { 
+		    cameraIds.forEach(function(cameraId) { 
 
-			if (video && canvas) {
-				canvas.getContext('2d').drawImage(video, 0, 0, canvas.width, canvas.height);
-			} 
-	    }
-*/
-/*
-     	function S4() {
-	        return (((1+Math.random())*0x10000)|0).toString(16).substring(1); 
-	    }
+				var cameraContainer = $( "#" + cameraId ); 
+				var cameraLink = cameraContainer.find(".camera-link"); 
+				var photoContainerId = cameraContainer.find(".photo-imageset").attr("id"); 
 
-	    function newGuid() {
+				console.log("cameraId=", cameraId, cameraLink, photoContainerId); 
 
-			// then to call it, plus stitch in '4' in the third group
-			var guid = (S4() + S4() + "-" + S4() + "-4" + S4().substr(0,3) + "-" + S4() + "-" + S4() + S4() + S4()).toLowerCase();
-			return guid; 
-	    } 
-*/	    
-/*
-	    function saveAndClose() {
-	    	var callback = dialog.data("saveSnapshotHandler"); 
-	    	console.log("saveAndClose()", callback); 
+				var cameraLinkIOS = cameraContainer.find(".camera-link-ios"); 
+				cameraLinkIOS.change(handleFileSelect); 
 
-	    	if (callback) {
-	    		callback(); 
-	    	}
-			dialog.dialog( "close" );
-	    }
+				var iOS = utils.isIOS(); 
+				console.log("iOS", iOS); 
+				var getDisplayValue = function(isVisible) {
+					return isVisible? "" : "none"; 
+				}; 
+				cameraLinkIOS.css("display", getDisplayValue(iOS)); 
+				cameraLink.css("display", getDisplayValue(!iOS)); 
 
-	    function cancel() {
-			dialog.dialog( "close" );
-	    }
-*/
-	function configureCameras(cameraIds) { 
-	    cameraIds.forEach(function(cameraId) { 
+				if (photoContainerId) {
+					cameraLink.click(function() { 
+						cameraDialog.displayCameraDialog("camera-dialog", cameraId, photoContainerId, saveSnapshot); 
+					}); 
+				}
 
-			var cameraContainer = $( "#" + cameraId ); 
-			var cameraLink = cameraContainer.find(".camera-link"); 
-			var photoContainerId = cameraContainer.find(".photo-imageset").attr("id"); 
-
-			console.log("cameraId=", cameraId, cameraLink, photoContainerId); 
-
-			var cameraLinkIOS = cameraContainer.find(".camera-link-ios"); 
-			cameraLinkIOS.change(handleFileSelect); 
-
-			var iOS = utils.isIOS(); 
-			console.log("iOS", iOS); 
-			var getDisplayValue = function(isVisible) {
-				return isVisible? "" : "none"; 
-			}; 
-			cameraLinkIOS.css("display", getDisplayValue(iOS)); 
-			cameraLink.css("display", getDisplayValue(!iOS)); 
-
-			if (photoContainerId) {
-				cameraLink.click(function() { cameraDialog.displayCameraDialog("camera-dialog"); }); 
-			}
-		}); 
-	} 
+				populateImagesList(photoContainerId, cameraId); 
+			}); 
+		} 
 
 	</script>
 
@@ -242,18 +171,42 @@
 			    <input type="file" class="camera-link-ios" accept="image/*" capture="camera" />
 	        </span>
 	    </div>
-		<div class="parent photo-imageset" id="photoImageset1">aaa</div> 
+		<div class="parent photo-imageset" id="photoImageset1"></div> 
 	</div>
 	<br />
 
+	<div id="camera2">
+	    <div class="input-group">
+	        <input type="text" class="form-control" placeholder="Meter Reading 2">
+	        <span class="input-group-addon">
+	        	<a href="javascript:void(0)" class="camera-link"><i class="fa fa-camera" aria-hidden="true"></i></a>
+			    <input type="file" class="camera-link-ios" accept="image/*" capture="camera" />
+	        </span>
+	    </div>
+		<div class="parent photo-imageset" id="photoImageset2"></div> 
+	</div>
+	<br />
 
+	<div id="camera3">
+	    <div class="input-group">
+	        <input type="text" class="form-control" placeholder="Meter Reading 3">
+	        <span class="input-group-addon">
+	        	<a href="javascript:void(0)" class="camera-link"><i class="fa fa-camera" aria-hidden="true"></i></a>
+			    <input type="file" class="camera-link-ios" accept="image/*" capture="camera" />
+	        </span>
+	    </div>
+		<div class="parent photo-imageset" id="photoImageset3"></div> 
+	</div>
+	<br />
+
+<!--
 	<input type="button" id="addPhoto" class="btn btn-primary" onclick="displayCameraDialog()" value="Add photo"></input>
 	<br />
     <input type="file" id="addPhotoIOS" accept="image/*" capture="camera">
 	<br />
 	<br />
 	<div class="parent photo-imageset" id="dummyImages"></div>
-
+//-->
     <div id="camera-dialog" style="display: none">
         <form name="cameraForm">
 

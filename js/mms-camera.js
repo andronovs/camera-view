@@ -4,19 +4,22 @@ var cameraDialog = (function() {
 
 	var video, canvas; 
 	var constraints = { video: true, audio: false }; 
+	
+	var camId, contId, callback; 
 
-	function displayCameraDialog(cameraDialogId) {
+	function displayCameraDialog(cameraDialogId, cameraId, containerId, saveSnapshotCallback) {
+
+		camId = cameraId; 
+		contId = containerId; 
+		callback = saveSnapshotCallback; 
 
 		var cameraDialog = $( "#" + cameraDialogId ); 
 		cameraDialog.css( "display", ""); 
 
 		var captureSnapshotBtn = cameraDialog.find("#captureSnapshotId"); 
 		var saveAndCloseBtn = cameraDialog.find("#saveAndCloseId"); 
-		var cancelBtn = cameraDialog.find("#cancelId"); 
-
-		//console.log("displayCameraDialog():", captureSnapshotBtn, saveAndCloseBtn, cancelBtn); 
-
-		//captureSnapshotBtn.click(captureSnapshot); 
+		var cancelBtn = cameraDialog.find("#cancelId");  
+ 
 		captureSnapshotBtn.click(captureSnapshot); 
 		saveAndCloseBtn.click(saveAndClose); 
 		cancelBtn.click(cancel); 
@@ -25,11 +28,8 @@ var cameraDialog = (function() {
 		canvas = cameraDialog.find("#canvasId")[0];
 
 		console.log("displayCameraDialog():", cameraDialog, video, canvas); 
-
-		//video = document.getElementById("dataVideoId"); 
-		//canvas = document.getElementById("canvasId");
 		
-		//.data("saveSnapshotHandler", saveSnapshot)
+		// .data("saveSnapshotHandler", saveSnapshot)
 		dialog = cameraDialog
 		.dialog({
 			maxWidth: 800,
@@ -58,11 +58,12 @@ var cameraDialog = (function() {
     }
 
     function saveAndClose() {
-    	var callback = dialog.data("saveSnapshotHandler"); 
+    	//var callback = dialog.data("saveSnapshotHandler"); 
     	console.log("saveAndClose()", callback); 
 
     	if (callback) {
-    		callback(); 
+    		var imgData = canvas.toDataURL("image/png"); 
+    		callback(camId, contId, imgData); 
     	}
 		dialog.dialog( "close" );
     }

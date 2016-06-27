@@ -39,7 +39,7 @@ var dummyImages = (function() {
 	function addToIndexedDB() {
 		_.forEach(testImages, function(testImage) {
 			console.log("addToIndexedDB()", testImage.fileName); 
-			myIndexedDB.addImage(testImage.fileName, testImage.dateTaken, testImage.content); 
+			myIndexedDB.addImage(testImage.fileName, 'camera1', testImage.dateTaken, testImage.content); 
 		}); 
 	}
 

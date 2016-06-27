@@ -9,18 +9,18 @@ var myIndexedDB = (function() {
 		var schema = {
 		  stores: [{
 		    name: 'imagesTable',
-		    indexes: [{ name: 'fileName' }]
+		    indexes: [{ name: 'fileName' }, { name: 'cameraId' }]
 		  }]
 		}; 
 
         db = new ydn.db.Storage('MyDB', schema); 
     }
     
-    function addImage(id, dateTaken, content) { 
+    function addImage(id, cameraId, dateTaken, content) { 
     	console.log("addImage()...", id, dateTaken, content.length); 
 
         // we assume here that id (fileName) is unique 
-    	db.put('imagesTable', { fileName: id, dateTaken: String(dateTaken), content: content }, id); 
+    	db.put('imagesTable', { fileName: id, cameraId: cameraId, dateTaken: String(dateTaken), content: content }, id); 
     }
 
     function getImages() {
@@ -77,7 +77,7 @@ var myIndexedDB = (function() {
             var q = db.from('imagesTable');
             q = q.where('cameraId', '=', cameraId);
             q.list().done(function(list) {
-                console.log(list);
+                console.log("findByCameraId():", cameraId, list);
                 resolve(list); 
             }); 
         }); 
