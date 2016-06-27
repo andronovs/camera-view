@@ -53,10 +53,44 @@ var myIndexedDB = (function() {
         db.remove("imagesTable", id); 
 	}
 
+    function findByFileName(fileName) {
+        console.log("findByName()...", fileName); 
+
+        var p = new Promise(function(resolve, reject) {
+
+            var q = db.from('imagesTable');
+            q = q.where('fileName', '=', fileName);
+            q.list().done(function(list) {
+                console.log(list);
+                resolve(list); 
+            }); 
+        }); 
+
+        return p; 
+    }
+
+    function findByCameraId(cameraId) { 
+        console.log("findByCameraId()...", cameraId); 
+
+        var p = new Promise(function(resolve, reject) {
+
+            var q = db.from('imagesTable');
+            q = q.where('cameraId', '=', cameraId);
+            q.list().done(function(list) {
+                console.log(list);
+                resolve(list); 
+            }); 
+        }); 
+
+        return p; 
+    }
+
     return {        
     	addImage: addImage, 
         getImages: getImages, 
-    	removeImage: removeImage 
+    	removeImage: removeImage, 
+        findByFileName: findByFileName, 
+        findByCameraId: findByCameraId  
     };
 
 }()); 

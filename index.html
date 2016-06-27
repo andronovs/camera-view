@@ -34,25 +34,29 @@
     <script src="js/mms-video.js"></script>
     <script src="js/mms-dummy-images.js"></script>
     <script src="js/mms-indexedDB.js"></script>
+    <script src="js/mms-camera.js"></script>
+	<script src="js/mms-utils.js"></script>
 
 	<script>
 		var photoSize = { width: 150, height: 100 }; 
-		var cameraResolution = { width: 380, height: 260 }; 
-		var dialog; 
+		//var cameraResolution = { width: 380, height: 260 }; 
+		//var dialog; 
 
-		var video, canvas; 
-		var constraints = { video: true, audio: false }; 
+		//var video, canvas; 
+		//var constraints = { video: true, audio: false }; 
 
 		$(init);
 
 		function init() {
 
 			//dummyImages.addToIndexedDB(); 
-			populateImagesList();
+			//populateImagesList(); 
+			configureCameras(['camera1', 'camera2', 'camera3']); 
 
 			$("#addPhotoIOS").change(handleFileSelect); 
 
-			var iOS = ['iPad', 'iPhone', 'iPod'].indexOf(navigator.platform) >= 0; 
+			//var iOS = ['iPad', 'iPhone', 'iPod'].indexOf(navigator.platform) >= 0; 
+			var iOS = utils.isIOS(); 
 			console.log("iOS", iOS); 
 			var getDisplayValue = function(isVisible) {
 				return isVisible? "" : "none"; 
@@ -71,7 +75,7 @@
 				console.log("theFile=", theFile); 
 				
 				// render thumbnail 
-				var imgDiv = $('<div />').addClass("img").css("height", "100px"); 
+				var imgDiv = $('<div />').addClass("img").css("height", photoSize.height + "px"); 
 				imgDiv.append($("<img />").attr("src", theFile.target.result).attr("width", photoSize.width).attr("height", photoSize.height)); 
 
 				var imagesDiv = $("#dummyImages"); 
@@ -82,9 +86,26 @@
 			reader.readAsDataURL(f);
 		}
 
-		function addImageToList(imageObject) {
+		function populateImagesList() { 
+			// populate the list of test dummy images 
+			myIndexedDB.getImages().then(function(images) { 
 
-			var imagesDiv = $("#dummyImages");
+			    var imagesDiv = $("#dummyImages"); 
+			    if (images.length == 0) {
+			    	imagesDiv.append($("<div>There are no images in the local IndexedDB database.</div>")); 
+			    }
+
+			    $.each(images, function() {
+					//console.log("image=", this); 
+					addImageToList("dummyImages", this); 
+				}); 
+			}); 
+		}
+
+		function addImageToList(listId, imageObject) {
+
+			//var imagesDiv = $("#dummyImages");
+			var imagesDiv = $("#" + listId);
 			imagesDiv.html(''); 
 			var imgDiv = $('<div />').addClass("img").css("height", photoSize.height + "px"); 
 			var delDiv = $('<div />').addClass("del").attr("data-id", imageObject.fileName); 
@@ -113,30 +134,14 @@
 			imagesDiv.append(imgDiv); 
 		}
 
-		function populateImagesList() { 
-			// populate the list of test dummy images 
-			myIndexedDB.getImages().then(function(images) { 
-
-			    var imagesDiv = $("#dummyImages"); 
-			    if (images.length == 0) {
-			    	imagesDiv.append($("<div>There are no images in the local IndexedDB database.</div>")); 
-			    }
-
-			    $.each(images, function() {
-					//console.log("image=", this); 
-					addImageToList(this); 
-				}); 
-			}); 
-		}
-
 		function saveSnapshot() {
 			console.log("saveSnapshot()..."); 
 
 			var imgData = canvas.toDataURL("image/png");
 			var imgObject = { fileName: newGuid() + ".png", dateTaken: new Date(), content: imgData };
-			addImageToList(imgObject); 
+			addImageToList("dummyImages", imgObject); 
 		}
-
+/*
 		function displayCameraDialog() {
 			$( "#camera-dialog" ).css( "display", "");
 
@@ -170,7 +175,8 @@
 				canvas.getContext('2d').drawImage(video, 0, 0, canvas.width, canvas.height);
 			} 
 	    }
-
+*/
+/*
      	function S4() {
 	        return (((1+Math.random())*0x10000)|0).toString(16).substring(1); 
 	    }
@@ -181,7 +187,8 @@
 			var guid = (S4() + S4() + "-" + S4() + "-4" + S4().substr(0,3) + "-" + S4() + "-" + S4() + S4() + S4()).toLowerCase();
 			return guid; 
 	    } 
-
+*/	    
+/*
 	    function saveAndClose() {
 	    	var callback = dialog.data("saveSnapshotHandler"); 
 	    	console.log("saveAndClose()", callback); 
@@ -195,15 +202,56 @@
 	    function cancel() {
 			dialog.dialog( "close" );
 	    }
+*/
+	function configureCameras(cameraIds) { 
+	    cameraIds.forEach(function(cameraId) { 
+
+			var cameraContainer = $( "#" + cameraId ); 
+			var cameraLink = cameraContainer.find(".camera-link"); 
+			var photoContainerId = cameraContainer.find(".photo-imageset").attr("id"); 
+
+			console.log("cameraId=", cameraId, cameraLink, photoContainerId); 
+
+			var cameraLinkIOS = cameraContainer.find(".camera-link-ios"); 
+			cameraLinkIOS.change(handleFileSelect); 
+
+			var iOS = utils.isIOS(); 
+			console.log("iOS", iOS); 
+			var getDisplayValue = function(isVisible) {
+				return isVisible? "" : "none"; 
+			}; 
+			cameraLinkIOS.css("display", getDisplayValue(iOS)); 
+			cameraLink.css("display", getDisplayValue(!iOS)); 
+
+			if (photoContainerId) {
+				cameraLink.click(function() { cameraDialog.displayCameraDialog("camera-dialog"); }); 
+			}
+		}); 
+	} 
+
 	</script>
 
 </head>
 <body>
 
+	<div id="camera1">
+	    <div class="input-group">
+	        <input type="text" class="form-control" placeholder="Meter Reading 1">
+	        <span class="input-group-addon">
+	        	<a href="javascript:void(0)" class="camera-link"><i class="fa fa-camera" aria-hidden="true"></i></a>
+			    <input type="file" class="camera-link-ios" accept="image/*" capture="camera" />
+	        </span>
+	    </div>
+		<div class="parent photo-imageset" id="photoImageset1">aaa</div> 
+	</div>
+	<br />
+
+
 	<input type="button" id="addPhoto" class="btn btn-primary" onclick="displayCameraDialog()" value="Add photo"></input>
 	<br />
     <input type="file" id="addPhotoIOS" accept="image/*" capture="camera">
-
+	<br />
+	<br />
 	<div class="parent photo-imageset" id="dummyImages"></div>
 
     <div id="camera-dialog" style="display: none">
@@ -225,9 +273,9 @@
             </div> 
                   
             <div class="modal-footer">
-                <button type="button" class="btn btn-primary btn-lg pull-left" onclick="captureSnapshot()">Capture Image</button>
-                <button type="button" class="btn btn-primary btn-lg" onclick="saveAndClose()">Save</button>
-                <button type="button" class="btn btn-lg" onclick="cancel()">Cancel</button>
+                <button type="button" class="btn btn-primary btn-lg pull-left" id="captureSnapshotId">Capture Snapshot</button>
+                <button type="button" class="btn btn-primary btn-lg" id="saveAndCloseId">Save</button>
+                <button type="button" class="btn btn-lg" id="cancelId">Cancel</button>
             </div>
 
         </form>
