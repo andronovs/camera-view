@@ -46,31 +46,9 @@
 		$(init);
 
 		function init() {
-
 			configureCameras(['camera1', 'camera2', 'camera3']); 
 		} 
-		/*
-		function handleFileSelect(evt) {
-			console.log("handleFileSelect()...", evt.target.files); 
 
-			var f = evt.target.files[0]; 
-			var reader = new FileReader();
-
-			reader.onload = function(theFile) {
-				console.log("theFile=", theFile); 
-				
-				// render thumbnail 
-				var imgDiv = $('<div />').addClass("img").css("height", photoSize.height + "px"); 
-				imgDiv.append($("<img />").attr("src", theFile.target.result).attr("width", photoSize.width).attr("height", photoSize.height)); 
-
-				var imagesDiv = $("#dummyImages"); 
-				imagesDiv.append(imgDiv); 
-			}; 
-
-			// Read in the image file as a data URL.
-			reader.readAsDataURL(f);
-		}
-		*/ 
 		function populateImagesList(listId, cameraId) { 
 			// populate the list of all images for given camera  
 			myIndexedDB.findByCameraId(cameraId).then(function(images) { 
@@ -135,15 +113,14 @@
 				console.log("cameraId=", cameraId, cameraLink, photoContainerId); 
 
 				var cameraLinkIOS = cameraContainer.find(".camera-link-ios"); 
-				//cameraLinkIOS.change(handleFileSelect); 
 
 				var iOS = utils.isIOS(); 
 				console.log("iOS", iOS); 
 				var getDisplayValue = function(isVisible) {
 					return isVisible? "" : "none"; 
 				}; 
-				//cameraLinkIOS.css("display", getDisplayValue(iOS)); 
-				//cameraLink.css("display", getDisplayValue(!iOS)); 
+				cameraLinkIOS.css("display", getDisplayValue(iOS)); 
+				cameraLink.css("display", getDisplayValue(!iOS)); 
 
 				if (photoContainerId) {
 					cameraDialog.configureForIOS(cameraLinkIOS, cameraId, photoContainerId, saveSnapshot); 
@@ -159,8 +136,9 @@
 
 		function test() {
             BootstrapDialog.show({
-                title: 'Confirmation',
-                message: $('<div></div>').load('remote.html'), 
+                title: 'Take a photo',
+                message: $('<div></div>').load('camera.html'), 
+                cssClass: 'login-dialog', 
                 buttons: [{
                     label: 'Yes',
                     icon: 'glyphicon glyphicon-ok',

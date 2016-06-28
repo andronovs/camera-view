@@ -56,15 +56,48 @@ var cameraDialog = (function() {
 
 		console.log("displayCameraDialog():", cameraDialog, video, canvas); 
 		
-		// .data("saveSnapshotHandler", saveSnapshot)
-		dialog = cameraDialog
+		/*dialog = cameraDialog
 		.dialog({
 			maxWidth: 800,
 			maxHeight: 420,
 		    width: 800,
 		    height: 420, 
 		    modal: true 
-		}); 
+		}); */
+
+		dialog = true; 
+
+        BootstrapDialog.show({
+            title: 'Take a photo',
+            message: $('<div></div>').load('camera.html'), 
+            cssClass: 'login-dialog', 
+            buttons: [{
+                label: 'Save',
+                icon: 'glyphicon glyphicon-ok',
+                cssClass: 'btn-primary',
+                action: function (dialogItself) {
+
+			    	console.log("saveAndClose()", callback); 
+
+			    	if (callback) {
+			    		var imgData = canvas.toDataURL("image/png"); 
+			    		callback(camId, contId, imgData); 
+			    	}
+
+                    dialogItself.close();
+                }
+            }, {
+                label: 'Cancel',
+                icon: 'glyphicon glyphicon-remove',
+                cssClass: 'btn-danger',
+                action: function (dialogItself) {
+			    	
+			    	console.log("cancel()"); 
+                    
+                    dialogItself.close();
+                }
+            }]
+        });
 
         navigator.mediaDevices.getUserMedia(constraints)
 		.then(function (stream) {

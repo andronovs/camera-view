@@ -33,3 +33,7 @@ div.del {
     justify-content: center;
     cursor: pointer;
 }
+
+.login-dialog .modal-dialog {
+	width: 810px; 
+}
