@@ -19,12 +19,15 @@
     <link rel="shortcut icon" href="img/favicon.ico">
 
 	<link href="css/jquery-ui.css" rel="stylesheet">
-    <link href="css/bootstrap.css" rel="stylesheet">
 	<link href="css/font-awesome/css/font-awesome.css" rel="stylesheet">
+    <link href="css/bootstrap.css" rel="stylesheet">
+    <link href="css/bootstrap-dialog.css" rel="stylesheet">
     <link href="css/app.css" rel="stylesheet">
     <link href="css/mms-video.css" rel="stylesheet">
 
     <script src="js/vendor/jquery-2.1.4.min.js"></script>
+    <script src="js/vendor/bootstrap.min.js"></script>
+    <script src="js/vendor/bootstrap-dialog.js"></script>
     <script src="js/vendor/jquery-ui.1.11.4.min.js"></script>
 
  	<script src="https://cdn.jsdelivr.net/lodash/4.13.1/lodash.min.js"></script>
@@ -44,10 +47,9 @@
 
 		function init() {
 
-			//dummyImages.addToIndexedDB(); 
 			configureCameras(['camera1', 'camera2', 'camera3']); 
 		} 
-
+		/*
 		function handleFileSelect(evt) {
 			console.log("handleFileSelect()...", evt.target.files); 
 
@@ -68,15 +70,10 @@
 			// Read in the image file as a data URL.
 			reader.readAsDataURL(f);
 		}
-
+		*/ 
 		function populateImagesList(listId, cameraId) { 
 			// populate the list of all images for given camera  
 			myIndexedDB.findByCameraId(cameraId).then(function(images) { 
-
-			    /*var imagesDiv = $("#" + listId); 
-			    if (images.length == 0) {
-			    	imagesDiv.append($("<div>There are no images in the local IndexedDB database.</div>")); 
-			    }*/
 
 			    $.each(images, function() { 
 					addImageToList(listId, this); 
@@ -138,17 +135,19 @@
 				console.log("cameraId=", cameraId, cameraLink, photoContainerId); 
 
 				var cameraLinkIOS = cameraContainer.find(".camera-link-ios"); 
-				cameraLinkIOS.change(handleFileSelect); 
+				//cameraLinkIOS.change(handleFileSelect); 
 
 				var iOS = utils.isIOS(); 
 				console.log("iOS", iOS); 
 				var getDisplayValue = function(isVisible) {
 					return isVisible? "" : "none"; 
 				}; 
-				cameraLinkIOS.css("display", getDisplayValue(iOS)); 
-				cameraLink.css("display", getDisplayValue(!iOS)); 
+				//cameraLinkIOS.css("display", getDisplayValue(iOS)); 
+				//cameraLink.css("display", getDisplayValue(!iOS)); 
 
 				if (photoContainerId) {
+					cameraDialog.configureForIOS(cameraLinkIOS, cameraId, photoContainerId, saveSnapshot); 
+
 					cameraLink.click(function() { 
 						cameraDialog.displayCameraDialog("camera-dialog", cameraId, photoContainerId, saveSnapshot); 
 					}); 
@@ -157,6 +156,28 @@
 				populateImagesList(photoContainerId, cameraId); 
 			}); 
 		} 
+
+		function test() {
+            BootstrapDialog.show({
+                title: 'Confirmation',
+                message: $('<div></div>').load('remote.html'), 
+                buttons: [{
+                    label: 'Yes',
+                    icon: 'glyphicon glyphicon-ok',
+                    cssClass: 'btn-primary',
+                    action: function (dialogItself) {
+                        dialogItself.close();
+                    }
+                }, {
+                    label: 'No',
+                    icon: 'glyphicon glyphicon-remove',
+                    cssClass: 'btn-danger',
+                    action: function (dialogItself) {
+                        dialogItself.close();
+                    }
+                }]
+            });
+		}
 
 	</script>
 
@@ -199,7 +220,11 @@
 	</div>
 	<br />
 
-<!--
+	<input type="button" class="btn btn-primary" onclick="test()" value="Test"></input>
+	<!-- Button trigger modal -->
+	<button type="button" class="btn btn-primary btn-lg" data-toggle="modal" data-target="#myModal">Launch demo modal</button>
+
+	<!--
 	<input type="button" id="addPhoto" class="btn btn-primary" onclick="displayCameraDialog()" value="Add photo"></input>
 	<br />
     <input type="file" id="addPhotoIOS" accept="image/*" capture="camera">
@@ -233,6 +258,52 @@
 
         </form>
     </div>
+
+<!-- Modal -->
+<div class="modal fade" id="myModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
+  <div class="modal-dialog" role="document">
+    <div class="modal-content" style="width: 800px">
+      <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+        <h4 class="modal-title" id="myModalLabel">Modal title</h4>
+      </div>
+      <div class="modal-body">
+
+	    <div id="camera-dialog">
+	        <form name="cameraForm">
+
+	            <div class="row">
+	                <div class="col-sm-6">
+	                	<video id="dataVideoId" style="border:1px solid red; width: 380px; height: 260px" width="380" height="260"></video>
+	                </div>
+
+	                <div class="col-sm-6">
+	                	<canvas id="canvasId" style="border:1px solid green; width: 380px; height: 260px" width="380" height="260"></canvas>
+	                </div>
+	            </div> 
+
+	            <div class="row">
+	                <div id="errorMessage" class="col-sm-12" style="text-align: center;color: red"> 
+	                </div>
+	            </div> 
+	                  
+	            <div class="modal-footer">
+	                <button type="button" class="btn btn-primary btn-lg pull-left" id="captureSnapshotId">Capture Snapshot</button>
+	                <button type="button" class="btn btn-primary btn-lg" id="saveAndCloseId">Save</button>
+	                <button type="button" class="btn btn-lg" id="cancelId">Cancel</button>
+	            </div>
+
+	        </form>
+	    </div>
+        
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+        <button type="button" class="btn btn-primary">Save changes</button>
+      </div>
+    </div>
+  </div>
+</div>
 
 </body>
 </html>

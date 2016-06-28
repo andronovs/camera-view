@@ -4,8 +4,31 @@ var cameraDialog = (function() {
 
 	var video, canvas; 
 	var constraints = { video: true, audio: false }; 
-	
+
 	var camId, contId, callback; 
+
+	function configureForIOS(cameraLinkIOS, cameraId, containerId, saveSnapshotCallback) {
+
+		cameraLinkIOS.change((function(cameraId, containerId, callback) {
+
+			return function(evt) {
+				var f = evt.target.files[0]; 
+				var reader = new FileReader();
+
+				reader.onload = function(theFile) {
+					
+			    	if (callback) {
+			    		var imgData = theFile.target.result; 
+			    		callback(cameraId, containerId, imgData); 
+			    	}
+				}; 
+
+				// Read in the image file as a data URL.
+				reader.readAsDataURL(f);
+			}; 
+
+		})(cameraId, containerId, saveSnapshotCallback)); 
+	}
 
 	function displayCameraDialog(cameraDialogId, cameraId, containerId, saveSnapshotCallback) {
 
@@ -78,7 +101,8 @@ var cameraDialog = (function() {
     }
 
     return {        
-    	displayCameraDialog: displayCameraDialog 
+    	displayCameraDialog: displayCameraDialog, 
+    	configureForIOS: configureForIOS 
     };
 
 }()); 
