@@ -18,6 +18,7 @@ var cameraDialog = (function() {
 				reader.onload = function(theFile) {
 					
 			    	if (callback) {
+			    		document.write("callback!"); 
 			    		var imgData = theFile.target.result; 
 			    		callback(cameraId, containerId, imgData); 
 			    	}
