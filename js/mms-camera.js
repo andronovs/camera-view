@@ -56,17 +56,16 @@ var cameraDialog = (function() {
 
 		console.log("displayCameraDialog():", cameraDialog, video, canvas); 
 		
-		/*dialog = cameraDialog
+		dialog = cameraDialog
 		.dialog({
 			maxWidth: 800,
 			maxHeight: 420,
 		    width: 800,
 		    height: 420, 
 		    modal: true 
-		}); */
+		}); 
 
-		dialog = true; 
-
+		/*dialog = true; 
         BootstrapDialog.show({
             title: 'Take a photo',
             message: $('<div></div>').load('camera.html'), 
@@ -97,7 +96,7 @@ var cameraDialog = (function() {
                     dialogItself.close();
                 }
             }]
-        });
+        });*/
 
         navigator.mediaDevices.getUserMedia(constraints)
 		.then(function (stream) {
