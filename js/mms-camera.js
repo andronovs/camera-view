@@ -56,16 +56,16 @@ var cameraDialog = (function() {
 
 		console.log("displayCameraDialog():", cameraDialog, video, canvas); 
 		
-		dialog = cameraDialog
+		/*dialog = cameraDialog
 		.dialog({
 			maxWidth: 800,
 			maxHeight: 420,
 		    width: 800,
 		    height: 420, 
 		    modal: true 
-		}); 
+		}); */
 
-		/*dialog = true; 
+		dialog = true; 
         BootstrapDialog.show({
             title: 'Take a photo',
             message: $('<div></div>').load('camera.html'), 
@@ -76,11 +76,11 @@ var cameraDialog = (function() {
                 cssClass: 'btn-primary',
                 action: function (dialogItself) {
 
-			    	console.log("saveAndClose()", callback); 
+			    	console.log("saveAndClose()", saveSnapshotCallback); 
 
-			    	if (callback) {
+			    	if (saveSnapshotCallback) {
 			    		var imgData = canvas.toDataURL("image/png"); 
-			    		callback(camId, contId, imgData); 
+			    		saveSnapshotCallback(cameraId, containerId, imgData); 
 			    	}
 
                     dialogItself.close();
@@ -96,7 +96,7 @@ var cameraDialog = (function() {
                     dialogItself.close();
                 }
             }]
-        });*/
+        });
 
         navigator.mediaDevices.getUserMedia(constraints)
 		.then(function (stream) {
