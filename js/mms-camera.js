@@ -71,13 +71,25 @@ var cameraDialog = (function() {
             message: $('<div></div>').load('camera.html'), 
             onshown: function(dialogRef) {
             	
-            	var body = dialogRef.getModalBody(); 
+            	var body = dialogRef.getModalBody();
+
+            	var captureSnapshotBtn = body.find("#captureSnapshotId");
+            	captureSnapshotBtn.click(captureSnapshot);
 
             	// init video & canvas here 
-            	video = body[0].querySelector('video'); 
-            	canvas = body[0].querySelector('canvas'); 
-            	console.log("!!!BootstrapDialog onshown()", video, canvas); 
+            	video = body.find("#dataVideoId")[0];
+				canvas = body.find("#canvasId")[0]; 
 
+				navigator.mediaDevices.getUserMedia(constraints)
+				.then(function (stream) {
+					video.src = window.URL.createObjectURL(stream);
+				    console.log("!!!getUserMedia(): video=", video, stream); 
+				})
+				.catch(function (error) {
+				 	console.log('navigator.getUserMedia error: ', error);
+				});
+
+            	console.log("!!!BootstrapDialog onshown()", video, canvas); 
             }, 
             cssClass: 'login-dialog', 
             buttons: [{
@@ -108,14 +120,14 @@ var cameraDialog = (function() {
             }]
         });
 
-        navigator.mediaDevices.getUserMedia(constraints)
+        /*navigator.mediaDevices.getUserMedia(constraints)
 		.then(function (stream) {
 			video.src = window.URL.createObjectURL(stream);
-		    console.log("getUserMedia(): video=", video, stream); 
+		    console.log("!!!getUserMedia(): video=", video, stream); 
 		})
 		.catch(function (error) {
 		 	console.log('navigator.getUserMedia error: ', error);
-		});
+		});*/
 	}
 
     function captureSnapshot() { 
