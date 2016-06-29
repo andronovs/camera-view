@@ -77,8 +77,18 @@ var cameraDialog = (function() {
             	captureSnapshotBtn.click(captureSnapshot);
 
             	// init video & canvas here 
-            	video = body.find("#dataVideoId")[0];
-				canvas = body.find("#canvasId")[0]; 
+				var $video = body.find("#dataVideoId"); 
+				var $canvas = body.find("#canvasId"); 
+
+				var w = $video.css("width"); 
+				var h = $video.css("height"); 
+				console.log("w, h=", w, h); 
+
+				$canvas.css("width", w); 
+				$canvas.css("height", h); 
+
+            	video = $video[0];
+				canvas = $canvas[0]; 
 
 				navigator.mediaDevices.getUserMedia(constraints)
 				.then(function (stream) {
