@@ -1,3 +1,4 @@
+
 var cameraDialog = (function() {
 
 	//var dialog; 

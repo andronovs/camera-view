@@ -8,7 +8,7 @@ var cameraUI = (function() {
 		}); 
 	}
 
-    function configureCamera(cameraId) {
+    function configureCamera(cameraId, existingPhotos) {
 
 		var $cameraContainer = $( "#" + cameraId ); 
 		var $cameraLink = $cameraContainer.find(".camera-link"); 
@@ -37,6 +37,13 @@ var cameraUI = (function() {
 			}); 
 		}
 
+		if (existingPhotos && existingPhotos.length > 0) {
+			existingPhotos.forEach(function(existingPhoto) {
+				// TODO: test this method call 
+				myIndexedDB.addExistingImage(cameraId, existingPhoto); 
+			}); 	
+		}
+
 		populateImagesList(photoContainerId, cameraId); 
 	}
 
@@ -54,10 +61,9 @@ var cameraUI = (function() {
 		console.log("saveSnapshot()...", listId, imgData.length); 
 
 		var fileName = utils.newGuid() + ".png"; 
-		var dateTaken = new Date(); 
-		var imgObject = { fileName: fileName, dateTaken: dateTaken, content: imgData, cameraId: cameraId };
+		var imgObject = { fileName: fileName, content: imgData, cameraId: cameraId };
 
-		myIndexedDB.addImage(fileName, cameraId, dateTaken, imgData);
+		myIndexedDB.addNewImage(fileName, cameraId, imgData);
 
 		addImageToList(listId, imgObject); 
 	} 
@@ -103,7 +109,10 @@ var cameraUI = (function() {
 	            var $photo = $delImg.parent(); 
 	            $photo.remove(); 
 
-	            myIndexedDB.removeImage(imageId); 
+	            myIndexedDB.deleteImage(imageId)
+	            .then(function(photo) {
+	            	console.log("Photo deleted:", photo); 
+	            }); 
 	        }
 		}); 
 
