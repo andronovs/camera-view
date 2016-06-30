@@ -23,6 +23,10 @@ var cameraDialog = (function() {
 			    	}
 				}; 
 
+				var $cameraContainer = $( "#" + cameraId );
+				var $photoContainer = $cameraContainer.find(".photo-imageset");
+				$photoContainer.removeClass("photo-imageset-hidden");			
+
 				// Read in the image file as a data URL.
 				reader.readAsDataURL(f);
 			}; 
@@ -32,8 +36,9 @@ var cameraDialog = (function() {
 
 	function displayCameraDialog(cameraId, containerId, saveSnapshotCallback) {
 
-		console.log("displayCameraDialog():", dialog, camId, contId, callback); 
+		//console.log("displayCameraDialog():", dialog, camId, contId, callback); 
 
+		// display the container? 
 		//var $cameraContainer = $( "#" + cameraId );
 		//var $photoContainer = $cameraContainer.find(".photo-imageset");
 		//$photoContainer.removeClass("photo-imageset-hidden");
@@ -106,6 +111,11 @@ var cameraDialog = (function() {
 				});
 
             	console.log("!!!BootstrapDialog onshown()", video, canvas); 
+
+				// display the container? 
+				var $cameraContainer = $( "#" + cameraId );
+				var $photoContainer = $cameraContainer.find(".photo-imageset");
+				$photoContainer.removeClass("photo-imageset-hidden");
             }, 
             cssClass: 'login-dialog', 
             buttons: [{
