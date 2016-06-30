@@ -53,6 +53,11 @@ var cameraUI = (function() {
 	function saveSnapshot(cameraId, listId, imgData) {
 		console.log("saveSnapshot()...", listId, imgData.length); 
 
+		// display the container? 
+		var $cameraContainer = $( "#" + cameraId );
+		var $photoContainer = $cameraContainer.find(".photo-imageset");
+		$photoContainer.removeClass("photo-imageset-hidden");
+
 		var fileName = utils.newGuid() + ".png"; 
 		var dateTaken = new Date(); 
 		var imgObject = { fileName: fileName, dateTaken: dateTaken, content: imgData, cameraId: cameraId };

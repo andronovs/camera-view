@@ -17,10 +17,10 @@ var cameraDialog = (function() {
 
 				reader.onload = function(theFile) {
 					
-					alert("111"); 
+					//alert("111"); 
 
 			    	if (callback) {
-			    		alert("222"); 
+			    		//alert("222"); 
 			    		var imgData = theFile.target.result; 
 			    		callback(cameraId, containerId, imgData); 
 			    	}
@@ -37,9 +37,9 @@ var cameraDialog = (function() {
 
 		console.log("displayCameraDialog():", dialog, camId, contId, callback); 
 
-		var $cameraContainer = $( "#" + cameraId );
-		var $photoContainer = $cameraContainer.find(".photo-imageset");
-		$photoContainer.removeClass("photo-imageset-hidden");
+		//var $cameraContainer = $( "#" + cameraId );
+		//var $photoContainer = $cameraContainer.find(".photo-imageset");
+		//$photoContainer.removeClass("photo-imageset-hidden");
 
 		//var cameraDialog = $( "#" + cameraDialogId ); 
 		//cameraDialog.css( "display", ""); 
