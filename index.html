@@ -18,37 +18,36 @@
 
     <link rel="shortcut icon" href="img/favicon.ico">
 
-	<link href="css/jquery-ui.css" rel="stylesheet">
-	<link href="css/font-awesome/css/font-awesome.css" rel="stylesheet">
+	<link href="fonts/font-awesome/css/font-awesome.css" rel="stylesheet">
     <link href="css/bootstrap.css" rel="stylesheet">
     <link href="css/bootstrap-dialog.css" rel="stylesheet">
     <link href="css/app.css" rel="stylesheet">
     <link href="css/mms-video.css" rel="stylesheet">
 
-    <script src="js/vendor/jquery-2.1.4.min.js"></script>
-    <script src="js/vendor/bootstrap.min.js"></script>
+    <script src="js/vendor/jquery-2.1.4.js"></script>
+    <script src="js/vendor/jquery-ui.1.11.4.js"></script>
+    <script src="js/vendor/bootstrap.js"></script>
     <script src="js/vendor/bootstrap-dialog.js"></script>
-    <script src="js/vendor/jquery-ui.1.11.4.min.js"></script>
 
- 	<script src="https://cdn.jsdelivr.net/lodash/4.13.1/lodash.min.js"></script>
-	<script src="webrtc/adapter.js"></script>
+ 	<script src="js/vendor/lodash.js"></script>
 	<script src="js/vendor/ydn.db-is-core-qry.min.js"></script>
+	<script src="webrtc/adapter.js"></script>
 
-    <script src="js/mms-video.js"></script>
-    <script src="js/mms-dummy-images.js"></script>
-    <script src="js/mms-indexedDB.js"></script>
     <script src="js/mms-camera.js"></script>
+    <script src="js/mms-camera-ui.js"></script>
+    <script src="js/mms-indexedDB.js"></script>
 	<script src="js/mms-utils.js"></script>
 
 	<script>
-		var photoSize = { width: 150, height: 100 }; 
+		//var photoSize = { width: 150, height: 100 }; 
 
 		$(init);
 
 		function init() {
-			configureCameras(['camera1', 'camera2', 'camera3']); 
+			cameraUI.configureCameras(['camera1', 'camera2', 'camera3']);
 		} 
 
+		/*
 		function populateImagesList(listId, cameraId) { 
 			// populate the list of all images for given camera  
 			myIndexedDB.findByCameraId(cameraId).then(function(images) { 
@@ -58,7 +57,8 @@
 				}); 
 			}); 
 		}
-
+		*/
+		/*
 		function addImageToList(listId, imageObject) {
 
 			var imagesDiv = $("#" + listId);
@@ -71,9 +71,24 @@
 			//console.log("addImageToList(): configuring", imageObject);  
 
 			imgDiv.click(function(evt) { 
-				evt.stopPropagation(); 
+				//evt.stopPropagation(); 
 
-				alert(imageObject.fileName); 
+				alert(imageObject.fileName);
+
+				var $textAndPic = $('<img height="100%" />').attr('src', imageObject.content);
+		        $textAndPic.append('Preview image <br />');
+		        
+		        BootstrapDialog.show({
+		            title: 'Preview',
+		            message: $textAndPic,
+		            cssClass: 'login-dialog-preview', 
+		            buttons: [{
+		                label: 'OK',
+		                action: function(dialogRef){
+		                    dialogRef.close();
+		                }
+		            }]
+		        }); 
 			}); 
 
 			delDiv.click(function(evt) { 
@@ -96,7 +111,8 @@
 
 			imagesDiv.append(imgDiv); 
 		}
-
+		*/
+		/*
 		function saveSnapshot(cameraId, listId, imgData) {
 			console.log("saveSnapshot()...", listId, imgData.length); 
 
@@ -107,8 +123,8 @@
 			myIndexedDB.addImage(fileName, cameraId, dateTaken, imgData);
 
 			addImageToList(listId, imgObject); 
-		}  
-
+		} */
+		/*
 		function configureCameras(cameraIds) { 
 		    cameraIds.forEach(function(cameraId) { 
 
@@ -138,7 +154,7 @@
 
 				populateImagesList(photoContainerId, cameraId); 
 			}); 
-		} 
+		} */
 
 	</script>
 
@@ -153,7 +169,7 @@
 			    <input type="file" class="camera-link-ios" accept="image/*" capture="camera" />
 	        </span>
 	    </div>
-		<div class="parent photo-imageset" id="photoImageset1" style="min-height: 100px; background-color: #c0c0c0"></div> 
+		<div class="photo-imageset photo-imageset-hidden" id="photoImageset1"></div> 
 	</div>
 	<br />
 
@@ -165,7 +181,7 @@
 			    <input type="file" class="camera-link-ios" accept="image/*" capture="camera" />
 	        </span>
 	    </div>
-		<div class="parent photo-imageset" id="photoImageset2" style="min-height: 100px; background-color: #c0c0c0"></div> 
+		<div class="photo-imageset photo-imageset-hidden" id="photoImageset2"></div> 
 	</div>
 	<br />
 
@@ -177,7 +193,7 @@
 			    <input type="file" class="camera-link-ios" accept="image/*" capture="camera" />
 	        </span>
 	    </div>
-		<div class="parent photo-imageset" id="photoImageset3" style="min-height: 100px; background-color: #c0c0c0"></div> 
+		<div class="photo-imageset photo-imageset-hidden" id="photoImageset3"></div> 
 	</div>
 	<br />
 

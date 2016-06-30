@@ -30,14 +30,18 @@ var cameraDialog = (function() {
 		})(cameraId, containerId, saveSnapshotCallback)); 
 	}
 
-	function displayCameraDialog(cameraDialogId, cameraId, containerId, saveSnapshotCallback) {
+	function displayCameraDialog(cameraId, containerId, saveSnapshotCallback) {
 
 		console.log("displayCameraDialog():", dialog, camId, contId, callback); 
 
-		var cameraDialog = $( "#" + cameraDialogId ); 
-		cameraDialog.css( "display", ""); 
+		var $cameraContainer = $( "#" + cameraId );
+		var $photoContainer = $cameraContainer.find(".photo-imageset");
+		$photoContainer.removeClass("photo-imageset-hidden");
 
-		if (!dialog) {
+		//var cameraDialog = $( "#" + cameraDialogId ); 
+		//cameraDialog.css( "display", ""); 
+
+		/*if (!dialog) {
 			camId = cameraId; 
 			contId = containerId; 
 			callback = saveSnapshotCallback; 
@@ -52,7 +56,7 @@ var cameraDialog = (function() {
 
 			video = cameraDialog.find("#dataVideoId")[0];
 			canvas = cameraDialog.find("#canvasId")[0];
-		}
+		}*/
 
 		console.log("displayCameraDialog():", cameraDialog, video, canvas); 
 		
@@ -72,6 +76,8 @@ var cameraDialog = (function() {
             onshown: function(dialogRef) {
             	
             	var body = dialogRef.getModalBody();
+
+            	callback = saveSnapshotCallback; 
 
             	var captureSnapshotBtn = body.find("#captureSnapshotId");
             	captureSnapshotBtn.click(captureSnapshot);
@@ -108,11 +114,11 @@ var cameraDialog = (function() {
                 cssClass: 'btn-primary',
                 action: function (dialogItself) {
 
-			    	console.log("saveAndClose()", saveSnapshotCallback); 
+			    	console.log("saveAndClose()", callback); 
 
-			    	if (saveSnapshotCallback) {
+			    	if (callback) {
 			    		var imgData = canvas.toDataURL("image/png"); 
-			    		saveSnapshotCallback(cameraId, containerId, imgData); 
+			    		callback(cameraId, containerId, imgData); 
 			    	}
 
                     dialogItself.close();

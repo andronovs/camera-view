@@ -1,4 +1,4 @@
-.parent {
+/*.parent {
 	display: flex; 
 	border: 2px solid red; 
 	flex-flow: row wrap;
@@ -12,7 +12,7 @@
 	margin: auto;
 	background-image: url("../img/no-preview-available.png");
 }
-
+*/
 div.del {
     position: absolute;
     right: 0;
@@ -27,4 +27,8 @@ div.del {
 
 .login-dialog .modal-dialog {
 	width: 100%; 
+}
+
+.login-dialog-preview .modal-dialog {
+	background-color: green;
 }
