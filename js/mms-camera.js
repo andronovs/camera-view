@@ -1,11 +1,11 @@
 var cameraDialog = (function() {
 
-	var dialog; 
+	//var dialog; 
 
 	var video, canvas; 
 	var constraints = { video: true, audio: false }; 
 
-	var camId, contId, callback; 
+	//var camId, contId, callback; 
 
 	function configureForIOS(cameraLinkIOS, cameraId, containerId, saveSnapshotCallback) {
 
@@ -16,11 +16,8 @@ var cameraDialog = (function() {
 				var reader = new FileReader();
 
 				reader.onload = function(theFile) {
-					
-					//alert("111"); 
 
 			    	if (callback) {
-			    		//alert("222"); 
 			    		var imgData = theFile.target.result; 
 			    		callback(cameraId, containerId, imgData); 
 			    	}
@@ -72,7 +69,7 @@ var cameraDialog = (function() {
 		    modal: true 
 		}); */
 
-		dialog = true; 
+		//dialog = true; 
         BootstrapDialog.show({
             title: 'Take a photo',
             message: $('<div></div>').load('camera.html'), 
@@ -156,7 +153,7 @@ var cameraDialog = (function() {
 			canvas.getContext('2d').drawImage(video, 0, 0, canvas.width, canvas.height);
 		} 
     }
-
+/*
     function saveAndClose() {
     	//var callback = dialog.data("saveSnapshotHandler"); 
     	console.log("saveAndClose()", callback); 
@@ -172,7 +169,7 @@ var cameraDialog = (function() {
     	console.log("cancel()"); 
 		dialog.dialog( "close" );
     }
-
+*/ 
     return {        
     	displayCameraDialog: displayCameraDialog, 
     	configureForIOS: configureForIOS 
