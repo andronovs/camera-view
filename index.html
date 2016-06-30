@@ -43,7 +43,13 @@
 		$(init);
 
 		function init() {
-			cameraUI.configureCameras(['camera1', 'camera2', 'camera3']);
+
+			var cameraDetails = [{ cameraId: 'camera1', existingPhotos: [ '', '' ] }, 
+							{ cameraId: 'camera2', existingPhotos: [ '', '' ] }, 
+							{ cameraId: 'camera3', existingPhotos: null}]; 
+
+			cameraUI.configureCameras(cameraDetails); 
+			//cameraUI.configureCameras(['camera1', 'camera2', 'camera3']);
 		} 
 
 	</script>

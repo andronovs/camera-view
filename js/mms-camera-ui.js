@@ -2,9 +2,20 @@ var cameraUI = (function() {
 
 	var photoSize = { width: 150, height: 100 };
 
-	function configureCameras(cameraIds) { 
+	function configureCameras2(cameraIds) { 
 		cameraIds.forEach(function(cameraId) { 
 		    configureCamera(cameraId); 
+		}); 
+	}
+
+	function configureCameras(cameraDetails) { 
+		cameraDetails.forEach(function(cameraDetail) { 
+
+			var cameraId = cameraDetail.cameraId; 
+			var existingPhotos = cameraDetail.existingPhotos; 
+			//console.warn(cameraId, existingPhotos); 
+
+		    configureCamera(cameraId, existingPhotos); 
 		}); 
 	}
 
