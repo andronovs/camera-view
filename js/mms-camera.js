@@ -1,12 +1,9 @@
 
 var cameraDialog = (function() {
 
-	//var dialog; 
-
 	var video, canvas; 
-	var constraints = { video: true, audio: false }; 
-
-	//var camId, contId, callback; 
+	var constraints = { video: true, audio: false };
+	var $v, $c;  
 
 	function configureForIOS(cameraLinkIOS, cameraId, containerId, saveSnapshotCallback) {
 
@@ -65,20 +62,10 @@ var cameraDialog = (function() {
 		}*/
 
 		console.log("displayCameraDialog():", cameraDialog, video, canvas); 
-		
-		/*dialog = cameraDialog
-		.dialog({
-			maxWidth: 800,
-			maxHeight: 420,
-		    width: 800,
-		    height: 420, 
-		    modal: true 
-		}); */
 
-		//dialog = true; 
         BootstrapDialog.show({
             title: 'Take a photo',
-            message: $('<div></div>').load('camera.html'), 
+            message: $('<div></div>').load('test.html'), 
             onshown: function(dialogRef) {
             	
             	var body = dialogRef.getModalBody();
@@ -88,9 +75,15 @@ var cameraDialog = (function() {
             	var captureSnapshotBtn = body.find("#captureSnapshotId");
             	captureSnapshotBtn.click(captureSnapshot);
 
+            	var changeBtn = body.find("#changeId");
+            	changeBtn.click(swapVideoWithCanvas);
+
             	// init video & canvas here 
 				var $video = body.find("#dataVideoId"); 
 				var $canvas = body.find("#canvasId"); 
+
+				$v = $video; 
+				$c = $canvas; 
 
 				var w = $video.css("width"); 
 				var h = $video.css("height"); 
@@ -100,10 +93,12 @@ var cameraDialog = (function() {
 				$canvas.css("height", h); 
 
             	video = $video[0];
-				canvas = $canvas[0]; 
+				canvas = window.canvas = $canvas[0]; 
 
 				navigator.mediaDevices.getUserMedia(constraints)
 				.then(function (stream) {
+					window.stream = stream; 
+					video.srcObject = stream;
 					video.src = window.URL.createObjectURL(stream);
 				    console.log("!!!getUserMedia(): video=", video, stream); 
 				})
@@ -157,30 +152,21 @@ var cameraDialog = (function() {
 		});*/
 	}
 
+	function swapVideoWithCanvas() {
+		$v.toggleClass("photo-imageset-hidden");
+		$c.toggleClass("photo-imageset-hidden");  
+	}
+
     function captureSnapshot() { 
         console.log("captureSnapshot()...", video, canvas); 
 
 		if (video && canvas) {
+			canvas.width = video.videoWidth;
+  			canvas.height = video.videoHeight;
 			canvas.getContext('2d').drawImage(video, 0, 0, canvas.width, canvas.height);
 		} 
     }
-/*
-    function saveAndClose() {
-    	//var callback = dialog.data("saveSnapshotHandler"); 
-    	console.log("saveAndClose()", callback); 
-
-    	if (callback) {
-    		var imgData = canvas.toDataURL("image/png"); 
-    		callback(camId, contId, imgData); 
-    	}
-		dialog.dialog( "close" );
-    }
-
-    function cancel() {
-    	console.log("cancel()"); 
-		dialog.dialog( "close" );
-    }
-*/ 
+ 
     return {        
     	displayCameraDialog: displayCameraDialog, 
     	configureForIOS: configureForIOS 
