@@ -1,6 +1,6 @@
 var photoStatuses = { New: 0, Existing: 1, Deleted: 2 }; 
 
-var mmsIndexedDB = (function() {
+var mmsPhotoDB = (function() {
 
 	var db; 
 

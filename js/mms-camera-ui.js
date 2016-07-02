@@ -38,7 +38,7 @@ var mmsCameraUI = (function() {
 
 		if (existingPhotos && existingPhotos.length > 0) {
 			existingPhotos.forEach(function(existingPhoto) {
-				mmsIndexedDB.addExistingPhoto(cameraId, existingPhoto); 
+				mmsPhotoDB.addExistingPhoto(cameraId, existingPhoto); 
 			}); 	
 		}
 
@@ -47,7 +47,7 @@ var mmsCameraUI = (function() {
 
 	function populatePhotoList(photoContainerId, cameraId) { 
 		// populate the list of all photos for given camera  
-		mmsIndexedDB.findPhotosByCameraId(cameraId).then(function(photos) { 
+		mmsPhotoDB.findPhotosByCameraId(cameraId).then(function(photos) { 
 
 		    $.each(photos, function() { 
 				addPhotoToList(photoContainerId, this); 
@@ -60,7 +60,7 @@ var mmsCameraUI = (function() {
 		var fileName = mmsCameraUtils.newGuid() + ".png"; 
 		var imgObject = { fileName: fileName, content: imgData, cameraId: cameraId };
 
-		mmsIndexedDB.addNewPhoto(fileName, cameraId, imgData);
+		mmsPhotoDB.addNewPhoto(fileName, cameraId, imgData);
 
 		addPhotoToList(photoContainerId, imgObject); 
 	} 
@@ -103,7 +103,7 @@ var mmsCameraUI = (function() {
 	            var $photo = $delImg.parent(); 
 	            $photo.remove(); 
 
-	            mmsIndexedDB.deletePhoto(imageId)
+	            mmsPhotoDB.deletePhoto(imageId)
 	            .then(function(photo) {
 	            }); 
 	        }
