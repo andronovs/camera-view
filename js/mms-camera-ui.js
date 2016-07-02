@@ -1,19 +1,12 @@
 var cameraUI = (function() {
 
-	var photoSize = { width: 150, height: 100 };
-
-	/*function configureCameras2(cameraIds) { 
-		cameraIds.forEach(function(cameraId) { 
-		    configureCamera(cameraId); 
-		}); 
-	}*/
+	var photoSize = { width: 150, height: 113 };
 
 	function configureCameras(cameraDetails) { 
 		cameraDetails.forEach(function(cameraDetail) { 
 
 			var cameraId = cameraDetail.cameraId; 
 			var existingPhotos = cameraDetail.existingPhotos; 
-			//console.warn(cameraId, existingPhotos); 
 
 		    configureCamera(cameraId, existingPhotos); 
 		}); 
@@ -26,14 +19,9 @@ var cameraUI = (function() {
 		var $photoContainer = $cameraContainer.find(".photo-imageset"); 
 		var photoContainerId = $photoContainer.attr("id");
 
-		console.log("Now:", $photoContainer, photoContainerId); 
-
-		console.log("cameraId=", cameraId, $cameraLink, photoContainerId); 
-
 		var $cameraLinkIOS = $cameraContainer.find(".camera-link-ios"); 
 
 		var iOS = utils.isIOS(); 
-		console.log("iOS", iOS); 
 		var getDisplayValue = function(isVisible) {
 			return isVisible? "" : "none"; 
 		}; 
@@ -58,30 +46,30 @@ var cameraUI = (function() {
 		populateImagesList(photoContainerId, cameraId); 
 	}
 
-	function populateImagesList(listId, cameraId) { 
+	function populateImagesList(photoContainerId, cameraId) { 
 		// populate the list of all images for given camera  
 		myIndexedDB.findByCameraId(cameraId).then(function(images) { 
 
 		    $.each(images, function() { 
-				addImageToList(listId, this); 
+				addImageToList(photoContainerId, this); 
 			}); 
 		}); 
 	}
 
-	function saveSnapshot(cameraId, listId, imgData) {
-		console.log("saveSnapshot()...", listId, imgData.length); 
+	function saveSnapshot(cameraId, photoContainerId, imgData) {
+		console.log("saveSnapshot()...", photoContainerId, imgData.length); 
 
 		var fileName = utils.newGuid() + ".png"; 
 		var imgObject = { fileName: fileName, content: imgData, cameraId: cameraId };
 
 		myIndexedDB.addNewImage(fileName, cameraId, imgData);
 
-		addImageToList(listId, imgObject); 
+		addImageToList(photoContainerId, imgObject); 
 	} 
 
-	function addImageToList(listId, imageObject) {
+	function addImageToList(photoContainerId, imageObject) {
 
-		var $imagesDiv = $("#" + listId);
+		var $imagesDiv = $("#" + photoContainerId);
 		var $imgDiv = $('<div />').addClass("img").css("height", photoSize.height + "px"); 
 		var $delDiv = $('<div />').addClass("del").attr("data-id", imageObject.fileName); 
 		var $icon = $('<i aria-hidden="true" />').addClass("fa fa-trash-o"); 
@@ -91,17 +79,15 @@ var cameraUI = (function() {
 		$imgDiv.click(function(evt) { 
 			evt.stopPropagation(); 
 
-			alert(imageObject.fileName);
-
-			var $textAndPic = $('<img height="100%" />').attr('src', imageObject.content);
-	        $textAndPic.append('Preview image <br />');
+			var $pic = $('<img style="width: 100%" width="100%" />').attr('src', imageObject.content);
 	        
 	        BootstrapDialog.show({
-	            title: 'Preview',
-	            message: $textAndPic,
-	            cssClass: 'login-dialog-preview', 
+	            title: 'Photo Preview',
+	            message: $pic,
+	            cssClass: 'login-dialog', 
 	            buttons: [{
 	                label: 'OK',
+	                cssClass: 'btn-primary',
 	                action: function(dialogRef){
 	                    dialogRef.close();
 	                }

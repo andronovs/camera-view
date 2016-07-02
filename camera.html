@@ -2,18 +2,16 @@
         <form name="cameraForm">
 
             <div class="row">
-                <div class="col-sm-6">
-                	<video id="dataVideoId" autoplay style="border:1px solid red;width: 100%;height: auto" width="100%" height="auto"></video>
+                <div class="col-sm-12">
+                	<video id="dataVideoId" autoplay style="width:100%" width="100%"></video>
                 </div>
+            </div>
 
-                <div class="col-sm-6">
-                	<canvas id="canvasId" style="border:2px solid green;width: 100%;height: auto" width="100%" height="auto"></canvas>
+            <div class="row">
+                <div class="col-sm-12">
+                	<canvas id="canvasId" class="hidden" style="width:100%;" width="100%"></canvas>
                 </div>
             </div> 
-
-            <div class="modal-footer">
-                <button type="button" class="btn btn-primary btn-lg pull-left" id="captureSnapshotId">Capture Snapshot</button>
-            </div>
 
         </form>
     </div>

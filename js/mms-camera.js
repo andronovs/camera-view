@@ -1,9 +1,12 @@
 
 var cameraDialog = (function() {
 
-	var video, canvas; 
-	var constraints = { video: true, audio: false };
-	var $v, $c;  
+	var constraints = { video: true, audio: false }; 
+	var blankCanvasURL; 
+	var callback; 
+
+	var $video, $canvas; 
+	var $btnCapture, $btnSwap, $btnSave; 
 
 	function configureForIOS(cameraLinkIOS, cameraId, containerId, saveSnapshotCallback) {
 
@@ -23,7 +26,7 @@ var cameraDialog = (function() {
 
 				var $cameraContainer = $( "#" + cameraId );
 				var $photoContainer = $cameraContainer.find(".photo-imageset");
-				$photoContainer.removeClass("photo-imageset-hidden");			
+				$photoContainer.removeClass("hidden");			
 
 				// Read in the image file as a data URL.
 				reader.readAsDataURL(f);
@@ -32,95 +35,77 @@ var cameraDialog = (function() {
 		})(cameraId, containerId, saveSnapshotCallback)); 
 	}
 
-	function displayCameraDialog(cameraId, containerId, saveSnapshotCallback) {
-
-		//console.log("displayCameraDialog():", dialog, camId, contId, callback); 
-
-		// display the container? 
-		//var $cameraContainer = $( "#" + cameraId );
-		//var $photoContainer = $cameraContainer.find(".photo-imageset");
-		//$photoContainer.removeClass("photo-imageset-hidden");
-
-		//var cameraDialog = $( "#" + cameraDialogId ); 
-		//cameraDialog.css( "display", ""); 
-
-		/*if (!dialog) {
-			camId = cameraId; 
-			contId = containerId; 
-			callback = saveSnapshotCallback; 
-
-			var captureSnapshotBtn = cameraDialog.find("#captureSnapshotId"); 
-			var saveAndCloseBtn = cameraDialog.find("#saveAndCloseId"); 
-			var cancelBtn = cameraDialog.find("#cancelId");  
-	 
-			captureSnapshotBtn.click(captureSnapshot); 
-			saveAndCloseBtn.click(saveAndClose); 
-			cancelBtn.click(cancel); 
-
-			video = cameraDialog.find("#dataVideoId")[0];
-			canvas = cameraDialog.find("#canvasId")[0];
-		}*/
-
-		console.log("displayCameraDialog():", cameraDialog, video, canvas); 
+	function displayCameraDialog(cameraId, containerId, saveSnapshotCallback) { 
 
         BootstrapDialog.show({
             title: 'Take a photo',
-            message: $('<div></div>').load('test.html'), 
+            message: $('<div></div>').load('camera.html'), 
+            cssClass: 'login-dialog', 
             onshown: function(dialogRef) {
             	
             	var body = dialogRef.getModalBody();
 
             	callback = saveSnapshotCallback; 
 
-            	var captureSnapshotBtn = body.find("#captureSnapshotId");
-            	captureSnapshotBtn.click(captureSnapshot);
-
             	var changeBtn = body.find("#changeId");
             	changeBtn.click(swapVideoWithCanvas);
 
             	// init video & canvas here 
-				var $video = body.find("#dataVideoId"); 
-				var $canvas = body.find("#canvasId"); 
+				$video = body.find("#dataVideoId"); 
+				$canvas = body.find("#canvasId"); 
 
-				$v = $video; 
-				$c = $canvas; 
+            	var video = $video[0];
+				var canvas = window.canvas = $canvas[0]; 
 
-				var w = $video.css("width"); 
-				var h = $video.css("height"); 
-				console.log("w, h=", w, h); 
-
-				$canvas.css("width", w); 
-				$canvas.css("height", h); 
-
-            	video = $video[0];
-				canvas = window.canvas = $canvas[0]; 
+				if (blankCanvasURL) {
+					blankCanvasURL = canvas.toDataURL(); 
+				} 
 
 				navigator.mediaDevices.getUserMedia(constraints)
 				.then(function (stream) {
 					window.stream = stream; 
 					video.srcObject = stream;
-					video.src = window.URL.createObjectURL(stream);
-				    console.log("!!!getUserMedia(): video=", video, stream); 
+					video.src = window.URL.createObjectURL(stream); 
 				})
 				.catch(function (error) {
-				 	console.log('navigator.getUserMedia error: ', error);
+				 	console.warn('navigator.getUserMedia error: ', error);
 				});
-
-            	console.log("!!!BootstrapDialog onshown()", video, canvas); 
 
 				// display the container? 
 				var $cameraContainer = $( "#" + cameraId );
 				var $photoContainer = $cameraContainer.find(".photo-imageset");
-				$photoContainer.removeClass("photo-imageset-hidden");
+				$photoContainer.removeClass("hidden");
+
+				// init references to buttons from modal footer 
+				var footer = dialogRef.getModalFooter(); 
+
+				$btnCapture = footer.find(".btn-capture"); 
+				$btnSwap = footer.find(".btn-swap"); 
+				$btnSave = footer.find(".btn-save"); 
+            }, 
+            onhidden: function(dialogRef) {
+            	stopCamera(); 
             }, 
             cssClass: 'login-dialog', 
             buttons: [{
+                label: 'Swap',
+                icon: 'glyphicon glyphicon-sort',
+                cssClass: 'btn btn-primary pull-left hidden btn-swap',
+                action: function (dialogItself) {
+			    	swapVideoWithCanvas(); 
+                }
+            }, {
+                label: 'Capture Snapshot',
+                icon: 'glyphicon glyphicon-camera',
+                cssClass: 'btn btn-primary pull-left btn-capture',
+                action: function (dialogItself) {
+			    	captureSnapshot(); 
+                }
+            }, {
                 label: 'Save',
                 icon: 'glyphicon glyphicon-ok',
-                cssClass: 'btn-primary',
+                cssClass: 'btn-primary hidden btn-save',
                 action: function (dialogItself) {
-
-			    	console.log("saveAndClose()", callback); 
 
 			    	if (callback) {
 			    		var imgData = canvas.toDataURL("image/png"); 
@@ -134,38 +119,70 @@ var cameraDialog = (function() {
                 icon: 'glyphicon glyphicon-remove',
                 cssClass: 'btn-danger',
                 action: function (dialogItself) {
-			    	
-			    	console.log("cancel()"); 
-                    
-                    dialogItself.close();
+                    dialogItself.close(); 
                 }
             }]
         });
-
-        /*navigator.mediaDevices.getUserMedia(constraints)
-		.then(function (stream) {
-			video.src = window.URL.createObjectURL(stream);
-		    console.log("!!!getUserMedia(): video=", video, stream); 
-		})
-		.catch(function (error) {
-		 	console.log('navigator.getUserMedia error: ', error);
-		});*/
 	}
 
 	function swapVideoWithCanvas() {
-		$v.toggleClass("photo-imageset-hidden");
-		$c.toggleClass("photo-imageset-hidden");  
+		$video.toggleClass("hidden");
+		$canvas.toggleClass("hidden"); 
+ 
+		var isShowingVideo = !$video.hasClass("hidden"); 
+		if (isShowingVideo) {
+			// make sure we let to switch to canvas only if there is something drawn on the canvas 
+			var currentCanvasURL = $canvas[0].toDataURL(); 
+			if (currentCanvasURL != blankCanvasURL) {
+				// canvas has some content -> enable video-to-canvas swapping 
+				if ($btnSwap.hasClass("hidden")) {
+					$btnSwap.removeClass("hidden"); 
+				}
+			}
+
+			if ($btnCapture.hasClass("hidden")) {
+				$btnCapture.removeClass("hidden"); 
+			}
+		}
+		else {
+			// when showing canvas, hide the 'capture video' button 
+			if (!$btnCapture.hasClass("hidden")) {
+				$btnCapture.addClass("hidden"); 
+			}
+		}
 	}
 
     function captureSnapshot() { 
-        console.log("captureSnapshot()...", video, canvas); 
+        console.log("captureSnapshot()...", $video, $canvas); 
 
-		if (video && canvas) {
+		if ($video && $canvas) {
+			var video = $video[0]; 
+			var canvas = $canvas[0]; 
+
 			canvas.width = video.videoWidth;
   			canvas.height = video.videoHeight;
 			canvas.getContext('2d').drawImage(video, 0, 0, canvas.width, canvas.height);
+
+			if ($btnSwap.hasClass("hidden")) {
+				$btnSwap.removeClass("hidden"); 
+			}
+			if ($btnSave.hasClass("hidden")) {
+				$btnSave.removeClass("hidden"); 
+			}
+
+			swapVideoWithCanvas(); 			
 		} 
-    }
+    } 
+
+    function stopCamera() {
+		var video = $video[0];
+		var stream = video.srcObject; 
+		
+		if (stream) {
+			stream.getTracks()[0].stop(); 
+			video.src = video.srcObject = "";  
+		}
+	}
  
     return {        
     	displayCameraDialog: displayCameraDialog, 

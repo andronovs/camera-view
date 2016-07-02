@@ -21,36 +21,30 @@
 	<link href="fonts/font-awesome/css/font-awesome.css" rel="stylesheet">
     <link href="css/bootstrap.css" rel="stylesheet">
     <link href="css/bootstrap-dialog.css" rel="stylesheet">
-    <link href="css/app.css" rel="stylesheet">
-    <link href="css/mms-video.css" rel="stylesheet">
+    <link href="css/mms-camera.css" rel="stylesheet">
 
     <script src="js/vendor/jquery-2.1.4.js"></script>
     <script src="js/vendor/jquery-ui.1.11.4.js"></script>
     <script src="js/vendor/bootstrap.js"></script>
     <script src="js/vendor/bootstrap-dialog.js"></script>
 
- 	<script src="https://cdnjs.cloudflare.com/ajax/libs/bluebird/3.3.5/bluebird.min.js"></script>
  	<script src="js/vendor/lodash.js"></script>
 	<script src="js/vendor/ydn.db-is-core-qry.min.js"></script>
 	<script src="js/vendor/adapter.js"></script>
-
-    <script src="js/mms-indexedDB.js"></script>
-    <script src="js/mms-camera.js"></script>
-    <script src="js/mms-camera-ui.js"></script>
-	<script src="js/mms-utils.js"></script>
+	
+	<script src="assets/mms-camera.js"></script>
 
 	<script>
 
 		$(init);
 
-		function init() {
+		function init() { 
 
-			var cameraDetails = [{ cameraId: 'camera1', existingPhotos: [ '', '' ] }, 
-							{ cameraId: 'camera2', existingPhotos: [ '', '' ] }, 
-							{ cameraId: 'camera3', existingPhotos: null}]; 
+			var cameraDetails = [{ cameraId: 'camera1', existingPhotos: null }, 
+								{ cameraId: 'camera2', existingPhotos: null }, 
+								{ cameraId: 'camera3', existingPhotos: null}]; 
 
 			cameraUI.configureCameras(cameraDetails); 
-			//cameraUI.configureCameras(['camera1', 'camera2', 'camera3']);
 		} 
 
 	</script>
@@ -66,7 +60,7 @@
 			    <input type="file" class="camera-link-ios" accept="image/*" capture="camera" />
 	        </span>
 	    </div>
-		<div class="photo-imageset photo-imageset-hidden" id="photoImageset1"></div> 
+		<div class="photo-imageset hidden" id="photoImageset1"></div> 
 	</div>
 	<br />
 
@@ -78,7 +72,7 @@
 			    <input type="file" class="camera-link-ios" accept="image/*" capture="camera" />
 	        </span>
 	    </div>
-		<div class="photo-imageset photo-imageset-hidden" id="photoImageset2"></div> 
+		<div class="photo-imageset hidden" id="photoImageset2"></div> 
 	</div>
 	<br />
 
@@ -90,7 +84,7 @@
 			    <input type="file" class="camera-link-ios" accept="image/*" capture="camera" />
 	        </span>
 	    </div>
-		<div class="photo-imageset photo-imageset-hidden" id="photoImageset3"></div> 
+		<div class="photo-imageset hidden" id="photoImageset3"></div> 
 	</div>
 	<br />
 
