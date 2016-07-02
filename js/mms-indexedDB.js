@@ -1,6 +1,6 @@
 var photoStatuses = { New: 0, Existing: 1, Deleted: 2 }; 
 
-var myIndexedDB = (function() {
+var mmsIndexedDB = (function() {
 
 	var db; 
 
@@ -10,74 +10,54 @@ var myIndexedDB = (function() {
 
 		var schema = {
 		  stores: [{
-		    name: 'imagesTable',
+		    name: 'photoTable',
 		    indexes: [{ name: 'fileName' }, { name: 'cameraId' }]
 		  }]
 		}; 
 
-        db = new ydn.db.Storage('MyDB', schema); 
+        db = new ydn.db.Storage('MMSPhotoDB', schema); 
     }
 
-    function addNewImage(id, cameraId, content) { 
-        console.log("addNewImage()...", id, cameraId, content.length); 
+    function addNewPhoto(id, cameraId, content) { 
 
         // we assume here that id (fileName) is unique 
-        db.put('imagesTable', { fileName: id, cameraId: cameraId, dateTaken: String(new Date()), 
+        db.put('photoTable', { fileName: id, cameraId: cameraId, dateTaken: String(new Date()), 
                                 photoStatus: photoStatuses.New, content: content }, id); 
     }
 
-    function addExistingImage(cameraId, content) { 
-        console.log("addExistingImage()...", cameraId, content.length); 
+    function addExistingPhoto(cameraId, content) {  
 
         var id = utils.newGuid() + ".png"; 
 
         // we assume here that id (fileName) is unique 
-        db.put('imagesTable', { fileName: id, cameraId: cameraId, dateTaken: null, 
+        db.put('photoTable', { fileName: id, cameraId: cameraId, dateTaken: null, 
                                 photoStatus: photoStatuses.Existing, content: content }, id); 
     }
     
-    function getImages() {
-
-        //console.log("Starting getImages()...", db);
-
-        /*var q = db.from('imagesTable');
-        //q = q.where('country', '=', 'SG').order('age');
-        q.list(function(list) {
-          console.log("getImages()...", list);
-        }); */
+    function getPhotos() {
 
         var p = new Promise(function(resolve, reject) {
 
-            var query = db.from('imagesTable'); 
+            var query = db.from('photoTable'); 
             query = query.where('photoStatus', '<', photoStatuses.Deleted); 
-            query.list().done(function(images) {
-              //console.log("Returning getImages():", images); // list of all images 
-
-              resolve(images); 
+            query.list().done(function(photos) {
+               resolve(photos); 
             }); 
         }); 
 
         return p; 
     }
-    /*
-    function removeImage(id) { 
-    	console.log("removeImage()...", id); 
-
-        db.remove("imagesTable", id); 
-	}
-    */
 
     // performs a virtual delete here 
-    function deleteImage(id) { 
-        console.log("deleteImage()...", id); 
+    function deletePhoto(id) { 
 
         var p = new Promise(function(resolve, reject) {
 
-            findByFileName(id).then(function(photos) {
+            findPhotosByFileName(id).then(function(photos) {
                 if (photos.length > 0) {
                     var photo = photos[0]; 
                     photo.photoStatus = photoStatuses.Deleted; 
-                    db.put('imagesTable', photo, id); 
+                    db.put('photoTable', photo, id); 
 
                     resolve(photo); 
                 }
@@ -87,41 +67,37 @@ var myIndexedDB = (function() {
         return p; 
     }
 
-    function findByFileName(fileName) {
-        console.log("findByName()...", fileName); 
+    function findPhotosByFileName(fileName) {
 
         var p = new Promise(function(resolve, reject) {
 
-            var q = db.from('imagesTable');
+            var q = db.from('photoTable');
             q = q.where('fileName', '=', fileName);
-            q.list().done(function(list) {
-                console.log(list);
-                resolve(list); 
+            q.list().done(function(photos) {
+                resolve(photos); 
             }); 
         }); 
 
         return p; 
     }
 
-    function findByCameraId(cameraId) { 
-        console.log("findByCameraId()...", cameraId); 
+    function findPhotosByCameraId(cameraId) {  
 
         var p = new Promise(function(resolve, reject) {
 
-            var q = db.from('imagesTable');
+            var q = db.from('photoTable');
             q = q.where('cameraId', '=', cameraId);
             //q = q.where('photoStatus', '<', photoStatuses.Deleted); 
-            q.list().done(function(list) {
+            q.list().done(function(photos) {
 
-                var filteredList = []; 
-                list.forEach(function(photo) {
+                var filteredPhotos = []; 
+                photos.forEach(function(photo) {
                     if (photo.photoStatus != photoStatuses.Deleted) {
-                        filteredList.push(photo); 
+                        filteredPhotos.push(photo); 
                     }                    
                 }); 
 
-                console.log("findByCameraId():", cameraId, filteredList);
-                resolve(filteredList); 
+                resolve(filteredPhotos); 
             }); 
         }); 
 
@@ -129,12 +105,12 @@ var myIndexedDB = (function() {
     }
 
     return {        
-    	addNewImage: addNewImage, 
-        addExistingImage: addExistingImage, 
-        getImages: getImages, 
-    	deleteImage: deleteImage, 
-        findByFileName: findByFileName, 
-        findByCameraId: findByCameraId  
+    	addNewPhoto: addNewPhoto, 
+        addExistingPhoto: addExistingPhoto, 
+        getPhotos: getPhotos, 
+    	deletePhoto: deletePhoto, 
+        findPhotosByFileName: findPhotosByFileName, 
+        findPhotosByCameraId: findPhotosByCameraId  
     };
 
 }()); 

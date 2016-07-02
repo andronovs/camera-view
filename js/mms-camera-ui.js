@@ -38,36 +38,34 @@ var cameraUI = (function() {
 
 		if (existingPhotos && existingPhotos.length > 0) {
 			existingPhotos.forEach(function(existingPhoto) {
-				// TODO: test this method call 
-				myIndexedDB.addExistingImage(cameraId, existingPhoto); 
+				mmsIndexedDB.addExistingPhoto(cameraId, existingPhoto); 
 			}); 	
 		}
 
-		populateImagesList(photoContainerId, cameraId); 
+		populatePhotoList(photoContainerId, cameraId); 
 	}
 
-	function populateImagesList(photoContainerId, cameraId) { 
-		// populate the list of all images for given camera  
-		myIndexedDB.findByCameraId(cameraId).then(function(images) { 
+	function populatePhotoList(photoContainerId, cameraId) { 
+		// populate the list of all photos for given camera  
+		mmsIndexedDB.findPhotosByCameraId(cameraId).then(function(photos) { 
 
-		    $.each(images, function() { 
-				addImageToList(photoContainerId, this); 
+		    $.each(photos, function() { 
+				addPhotoToList(photoContainerId, this); 
 			}); 
 		}); 
 	}
 
 	function saveSnapshot(cameraId, photoContainerId, imgData) {
-		console.log("saveSnapshot()...", photoContainerId, imgData.length); 
 
 		var fileName = utils.newGuid() + ".png"; 
 		var imgObject = { fileName: fileName, content: imgData, cameraId: cameraId };
 
-		myIndexedDB.addNewImage(fileName, cameraId, imgData);
+		mmsIndexedDB.addNewPhoto(fileName, cameraId, imgData);
 
-		addImageToList(photoContainerId, imgObject); 
+		addPhotoToList(photoContainerId, imgObject); 
 	} 
 
-	function addImageToList(photoContainerId, imageObject) {
+	function addPhotoToList(photoContainerId, imageObject) {
 
 		var $imagesDiv = $("#" + photoContainerId);
 		var $imgDiv = $('<div />').addClass("img").css("height", photoSize.height + "px"); 
@@ -100,15 +98,13 @@ var cameraUI = (function() {
 
 		    var imageId = imageObject.fileName; 
 	        if (confirm('Are you sure?') == true) {
-	            console.log("Deleting():", imageId); 
 
 	            var $delImg = $('div[data-id="' + imageId +'"]');
 	            var $photo = $delImg.parent(); 
 	            $photo.remove(); 
 
-	            myIndexedDB.deleteImage(imageId)
+	            mmsIndexedDB.deletePhoto(imageId)
 	            .then(function(photo) {
-	            	console.log("Photo deleted:", photo); 
 	            }); 
 	        }
 		}); 

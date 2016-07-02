@@ -45,9 +45,16 @@ var cameraDialog = (function() {
             cssClass: 'login-dialog', 
             onshown: function(dialogRef) {
             	
-            	var body = dialogRef.getModalBody();
-
             	callback = saveSnapshotCallback; 
+
+            	// init references to buttons from modal footer 
+				var footer = dialogRef.getModalFooter(); 
+
+				$btnCapture = footer.find(".btn-capture"); 
+				$btnRetake = footer.find(".btn-retake"); 
+				$btnSave = footer.find(".btn-save");
+            	
+            	var body = dialogRef.getModalBody();
 
             	var changeBtn = body.find("#changeId");
             	changeBtn.click(swapVideoWithCanvas);
@@ -58,6 +65,12 @@ var cameraDialog = (function() {
 
             	var video = $video[0];
 				var canvas = window.canvas = $canvas[0]; 
+
+				video.onloadeddata = function() {
+					if ($btnCapture.hasClass("disabled")) {
+						$btnCapture.removeClass("disabled"); 
+					}
+				}
 
 				navigator.mediaDevices.getUserMedia(constraints)
 				.then(function (stream) {
@@ -72,14 +85,7 @@ var cameraDialog = (function() {
 				// display the container? 
 				var $cameraContainer = $( "#" + cameraId );
 				var $photoContainer = $cameraContainer.find(".photo-imageset");
-				$photoContainer.removeClass("hidden");
-
-				// init references to buttons from modal footer 
-				var footer = dialogRef.getModalFooter(); 
-
-				$btnCapture = footer.find(".btn-capture"); 
-				$btnRetake = footer.find(".btn-retake"); 
-				$btnSave = footer.find(".btn-save"); 
+				$photoContainer.removeClass("hidden"); 
             }, 
             onhidden: function(dialogRef) {
             	stopCamera(); 
@@ -95,7 +101,7 @@ var cameraDialog = (function() {
             }, {
                 label: 'Capture Snapshot',
                 icon: 'glyphicon glyphicon-camera',
-                cssClass: 'btn btn-primary pull-left btn-capture',
+                cssClass: 'btn btn-primary pull-left disabled btn-capture',
                 action: function (dialogItself) {
 			    	captureSnapshot(); 
                 }
@@ -135,7 +141,6 @@ var cameraDialog = (function() {
 	}
 
     function captureSnapshot() { 
-        console.log("captureSnapshot()...", $video, $canvas); 
 
 		if ($video && $canvas) {
 			var video = $video[0]; 
