@@ -2,11 +2,10 @@
 var cameraDialog = (function() {
 
 	var constraints = { video: true, audio: false }; 
-	var blankCanvasURL; 
 	var callback; 
 
 	var $video, $canvas; 
-	var $btnCapture, $btnSwap, $btnSave; 
+	var $btnCapture, $btnRetake, $btnSave; 
 
 	function configureForIOS(cameraLinkIOS, cameraId, containerId, saveSnapshotCallback) {
 
@@ -21,6 +20,9 @@ var cameraDialog = (function() {
 			    	if (callback) {
 			    		var imgData = theFile.target.result; 
 			    		callback(cameraId, containerId, imgData); 
+			    	}
+			    	else {
+			    		console.warn("Callback is not defined!"); 
 			    	}
 				}; 
 
@@ -57,10 +59,6 @@ var cameraDialog = (function() {
             	var video = $video[0];
 				var canvas = window.canvas = $canvas[0]; 
 
-				if (blankCanvasURL) {
-					blankCanvasURL = canvas.toDataURL(); 
-				} 
-
 				navigator.mediaDevices.getUserMedia(constraints)
 				.then(function (stream) {
 					window.stream = stream; 
@@ -80,7 +78,7 @@ var cameraDialog = (function() {
 				var footer = dialogRef.getModalFooter(); 
 
 				$btnCapture = footer.find(".btn-capture"); 
-				$btnSwap = footer.find(".btn-swap"); 
+				$btnRetake = footer.find(".btn-retake"); 
 				$btnSave = footer.find(".btn-save"); 
             }, 
             onhidden: function(dialogRef) {
@@ -88,9 +86,9 @@ var cameraDialog = (function() {
             }, 
             cssClass: 'login-dialog', 
             buttons: [{
-                label: 'Swap',
+                label: 'Retake',
                 icon: 'glyphicon glyphicon-sort',
-                cssClass: 'btn btn-primary pull-left hidden btn-swap',
+                cssClass: 'btn btn-primary pull-left hidden btn-retake',
                 action: function (dialogItself) {
 			    	swapVideoWithCanvas(); 
                 }
@@ -111,6 +109,9 @@ var cameraDialog = (function() {
 			    		var imgData = canvas.toDataURL("image/png"); 
 			    		callback(cameraId, containerId, imgData); 
 			    	}
+			    	else {
+			    		console.warn("Callback is not defined!"); 
+			    	}
 
                     dialogItself.close();
                 }
@@ -128,28 +129,9 @@ var cameraDialog = (function() {
 	function swapVideoWithCanvas() {
 		$video.toggleClass("hidden");
 		$canvas.toggleClass("hidden"); 
- 
-		var isShowingVideo = !$video.hasClass("hidden"); 
-		if (isShowingVideo) {
-			// make sure we let to switch to canvas only if there is something drawn on the canvas 
-			var currentCanvasURL = $canvas[0].toDataURL(); 
-			if (currentCanvasURL != blankCanvasURL) {
-				// canvas has some content -> enable video-to-canvas swapping 
-				if ($btnSwap.hasClass("hidden")) {
-					$btnSwap.removeClass("hidden"); 
-				}
-			}
 
-			if ($btnCapture.hasClass("hidden")) {
-				$btnCapture.removeClass("hidden"); 
-			}
-		}
-		else {
-			// when showing canvas, hide the 'capture video' button 
-			if (!$btnCapture.hasClass("hidden")) {
-				$btnCapture.addClass("hidden"); 
-			}
-		}
+		$btnCapture.toggleClass("hidden"); 
+		$btnRetake.toggleClass("hidden");  
 	}
 
     function captureSnapshot() { 
@@ -163,9 +145,6 @@ var cameraDialog = (function() {
   			canvas.height = video.videoHeight;
 			canvas.getContext('2d').drawImage(video, 0, 0, canvas.width, canvas.height);
 
-			if ($btnSwap.hasClass("hidden")) {
-				$btnSwap.removeClass("hidden"); 
-			}
 			if ($btnSave.hasClass("hidden")) {
 				$btnSave.removeClass("hidden"); 
 			}
