@@ -1,4 +1,4 @@
-var cameraUI = (function() {
+var mmsCameraUI = (function() {
 
 	var photoSize = { width: 150, height: 113 };
 
@@ -21,7 +21,7 @@ var cameraUI = (function() {
 
 		var $cameraLinkIOS = $cameraContainer.find(".camera-link-ios"); 
 
-		var iOS = utils.isIOS(); 
+		var iOS = mmsCameraUtils.isIOS(); 
 		var getDisplayValue = function(isVisible) {
 			return isVisible? "" : "none"; 
 		}; 
@@ -57,7 +57,7 @@ var cameraUI = (function() {
 
 	function saveSnapshot(cameraId, photoContainerId, imgData) {
 
-		var fileName = utils.newGuid() + ".png"; 
+		var fileName = mmsCameraUtils.newGuid() + ".png"; 
 		var imgObject = { fileName: fileName, content: imgData, cameraId: cameraId };
 
 		mmsIndexedDB.addNewPhoto(fileName, cameraId, imgData);

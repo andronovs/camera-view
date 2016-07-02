@@ -27,7 +27,7 @@ var mmsIndexedDB = (function() {
 
     function addExistingPhoto(cameraId, content) {  
 
-        var id = utils.newGuid() + ".png"; 
+        var id = mmsCameraUtils.newGuid() + ".png"; 
 
         // we assume here that id (fileName) is unique 
         db.put('photoTable', { fileName: id, cameraId: cameraId, dateTaken: null, 
