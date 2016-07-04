@@ -1,4 +1,4 @@
-var mmsCameraUI = (function() {
+var cameraUI = (function() {
 
 	var photoSize = { width: 150, height: 113 };
 
@@ -21,7 +21,7 @@ var mmsCameraUI = (function() {
 
 		var $cameraLinkIOS = $cameraContainer.find(".camera-link-ios"); 
 
-		var iOS = mmsCameraUtils.isIOS(); 
+		var iOS = cameraUtils.isIOS(); 
 		var getDisplayValue = function(isVisible) {
 			return isVisible? "" : "none"; 
 		}; 
@@ -38,7 +38,7 @@ var mmsCameraUI = (function() {
 
 		if (existingPhotos && existingPhotos.length > 0) {
 			existingPhotos.forEach(function(existingPhoto) {
-				mmsPhotoDB.addExistingPhoto(cameraId, existingPhoto); 
+				photoDB.addExistingPhoto(cameraId, existingPhoto); 
 			}); 	
 		}
 
@@ -47,7 +47,7 @@ var mmsCameraUI = (function() {
 
 	function populatePhotoList(photoContainerId, cameraId) { 
 		// populate the list of all photos for given camera  
-		mmsPhotoDB.findPhotosByCameraId(cameraId).then(function(photos) { 
+		photoDB.findPhotosByCameraId(cameraId).then(function(photos) { 
 
 		    $.each(photos, function() { 
 				addPhotoToList(photoContainerId, this); 
@@ -57,10 +57,10 @@ var mmsCameraUI = (function() {
 
 	function saveSnapshot(cameraId, photoContainerId, imgData) {
 
-		var fileName = mmsCameraUtils.newGuid() + ".png"; 
+		var fileName = cameraUtils.newGuid() + ".png"; 
 		var imgObject = { fileName: fileName, content: imgData, cameraId: cameraId };
 
-		mmsPhotoDB.addNewPhoto(fileName, cameraId, imgData);
+		photoDB.addNewPhoto(fileName, cameraId, imgData);
 
 		addPhotoToList(photoContainerId, imgObject); 
 	} 
@@ -103,7 +103,7 @@ var mmsCameraUI = (function() {
 	            var $photo = $delImg.parent(); 
 	            $photo.remove(); 
 
-	            mmsPhotoDB.deletePhoto(imageId)
+	            photoDB.deletePhoto(imageId)
 	            .then(function(photo) {
 	            }); 
 	        }
@@ -116,7 +116,8 @@ var mmsCameraUI = (function() {
 	}
 
 	return {        
-    	configureCameras: configureCameras 
+    	configureCameras: configureCameras, 
+    	configureCamera: configureCamera 
     };
 
 }()); 

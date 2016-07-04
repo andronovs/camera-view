@@ -1,6 +1,6 @@
 var photoStatuses = { New: 0, Existing: 1, Deleted: 2 }; 
 
-var mmsPhotoDB = (function() {
+var photoDB = (function() {
 
 	var db; 
 
@@ -27,7 +27,7 @@ var mmsPhotoDB = (function() {
 
     function addExistingPhoto(cameraId, content) {  
 
-        var id = mmsCameraUtils.newGuid() + ".png"; 
+        var id = cameraUtils.newGuid() + ".png"; 
 
         // we assume here that id (fileName) is unique 
         db.put('photoTable', { fileName: id, cameraId: cameraId, dateTaken: null, 

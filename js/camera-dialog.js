@@ -1,4 +1,3 @@
-
 var cameraDialog = (function() {
 
 	var constraints = { video: true, audio: false }; 
@@ -37,11 +36,30 @@ var cameraDialog = (function() {
 		})(cameraId, containerId, saveSnapshotCallback)); 
 	}
 
+	function getCameraTemplateHtml() {
+
+		return ['<div id="camera-dialog">', 
+			        '<form name="cameraForm">',
+			            '<img src="img/spinner.gif" class="spinner" />',  
+			            '<div class="row">',
+			                '<div class="col-sm-12">',
+			                	'<video id="dataVideoId" autoplay style="width:100%" width="100%"></video>',
+			                '</div>',
+			            '</div>', 
+			            '<div class="row">',
+			                '<div class="col-sm-12">',
+			                	'<canvas id="canvasId" class="hidden" style="width:100%;" width="100%"></canvas>',
+			                '</div>',
+			            '</div>', 
+			        '</form>',
+			    '</div>'].join('\n'); 
+	}
+
 	function displayCameraDialog(cameraId, containerId, saveSnapshotCallback) { 
 
         BootstrapDialog.show({
             title: 'Take a photo',
-            message: $('<div></div>').load('camera.html'), 
+            message: $(getCameraTemplateHtml()), 
             cssClass: 'login-dialog', 
             onshown: function(dialogRef) {
             	
@@ -167,7 +185,7 @@ var cameraDialog = (function() {
 			video.src = video.srcObject = "";  
 		}
 	}
- 
+
     return {        
     	displayCameraDialog: displayCameraDialog, 
     	configureForIOS: configureForIOS 
