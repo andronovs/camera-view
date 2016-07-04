@@ -1,0 +1,67 @@
+.photo-imageset {
+  display: flex; 
+  border: 2px solid #c0c0c0; 
+  flex-flow: row wrap;
+  justify-content: space-around;
+
+  padding: 0 15px; 
+  background-color: #f0f0f0; 
+}
+
+.photo-imageset .img {
+  margin-bottom: 5px;
+  background-size: contain;
+  background-repeat: no-repeat;
+  background-position: center center;
+  border: none;
+  border-radius: 2px;
+  box-shadow: 0 1px 3px #ccc;
+  background: #fff;
+  overflow: hidden;
+  position: relative;
+  margin: .5%; 
+}
+
+.photo-imageset .img .del {
+  position: absolute;
+  right: 0;
+  width: 35px;
+  height: 35px;
+  background: rgba(255, 255, 255, 0.5);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer; 
+}
+
+.photo-imageset .img .del:hover {
+  color: #fff;
+  background-color: #000;
+}
+
+.login-dialog .modal-dialog {
+  height: 80%; 
+  width: 55%; 
+}
+
+.hidden {
+  display: none; 
+}
+
+.button.disabled {
+  opacity: 0.65; 
+  cursor: not-allowed;
+}
+
+/* spinner styles */
+
+img.spinner {
+  width: 100px;
+  height: 100px;
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  margin: auto;
+}
