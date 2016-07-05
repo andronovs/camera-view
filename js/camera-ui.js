@@ -101,10 +101,20 @@ var cameraUI = (function() {
 
 	            var $delImg = $('div[data-id="' + imageId +'"]');
 	            var $photo = $delImg.parent(); 
+
+				var $photoContainer = $photo.closest('.photo-imageset'); 
+				var $photoContainerImages = $photoContainer.find('img'); 
+				var remainingImagesCount = $photoContainerImages.length - 1; 	// exclude the current one which is being deleted 
+
 	            $photo.remove(); 
 
 	            photoDB.deletePhoto(imageId)
 	            .then(function(photo) {
+
+					// no images -> hide the container (nothing to show) 
+	            	if (remainingImagesCount == 0) { 
+						$photoContainer.addClass("hidden"); 
+	            	}
 	            }); 
 	        }
 		}); 

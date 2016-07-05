@@ -1,11 +1,12 @@
 .photo-imageset {
   display: flex; 
-  border: 2px solid #c0c0c0; 
+  border: 2px dashed #ccc; 
   flex-flow: row wrap;
   justify-content: space-around;
 
   padding: 0 15px; 
-  background-color: #f0f0f0; 
+  background-color: #eee; 
+  margin-top: 5px; 
 }
 
 .photo-imageset .img {
@@ -20,6 +21,10 @@
   overflow: hidden;
   position: relative;
   margin: .5%; 
+}
+
+.photo-imageset .img img {
+  height: 100%; 
 }
 
 .photo-imageset .img .del {
