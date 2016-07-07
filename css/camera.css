@@ -49,6 +49,12 @@
   width: 55%; 
 }
 
+@media all and (max-width: 768px) {
+  .modal.in .modal-dialog {
+    width: auto; 
+  }
+}
+
 .hidden {
   display: none; 
 }
