@@ -3,21 +3,32 @@ var cameraUI = (function() {
 	var photoSize = { width: 150, height: 113 };
 
 	function configureCameras(cameraDetails) { 
+
 		cameraDetails.forEach(function(cameraDetail) { 
 
-			var cameraId = cameraDetail.cameraId; 
+			var cameraSelector = cameraDetail.cameraSelector; 
 			var existingPhotos = cameraDetail.existingPhotos; 
 
-		    configureCamera(cameraId, existingPhotos); 
+		    configureCamera(cameraSelector, existingPhotos); 
 		}); 
 	}
 
-    function configureCamera(cameraId, existingPhotos) {
+    function configureCamera(cameraSelector, existingPhotos) {
 
-		var $cameraContainer = $( "#" + cameraId ); 
+		var $cameraContainer = $( cameraSelector ); 
+
+		if ($cameraContainer.length == 0) {
+			console.warn("Configured JQuery selector '%s' does not match any document element.", cameraSelector); 
+			return; 
+		}
+
+		if ($cameraContainer.length > 1) {
+			console.warn("Configured JQuery selector '%s' matches %s document elements. Using the first one at index 0.", cameraSelector, $cameraContainer.length); 
+			$cameraContainer = $($cameraContainer[0]); 
+		}
+
 		var $cameraLink = $cameraContainer.find(".camera-link"); 
 		var $photoContainer = $cameraContainer.find(".photo-imageset"); 
-		var photoContainerId = $photoContainer.attr("id");
 
 		var $cameraLinkIOS = $cameraContainer.find(".camera-link-ios"); 
 
@@ -28,46 +39,45 @@ var cameraUI = (function() {
 		$cameraLinkIOS.css("display", getDisplayValue(iOS)); 
 		$cameraLink.css("display", getDisplayValue(!iOS)); 
 
-		if (photoContainerId) {
-			cameraDialog.configureForIOS($cameraLinkIOS, cameraId, photoContainerId, saveSnapshot); 
+		if ($photoContainer) {
+			cameraDialog.configureForIOS($cameraLinkIOS, cameraSelector, $photoContainer, saveSnapshot); 
 
 			$cameraLink.click(function() { 
-				cameraDialog.displayCameraDialog(cameraId, photoContainerId, saveSnapshot); 
+				cameraDialog.displayCameraDialog(cameraSelector, $photoContainer, saveSnapshot); 
 			}); 
 		}
 
 		if (existingPhotos && existingPhotos.length > 0) {
 			existingPhotos.forEach(function(existingPhoto) {
-				photoDB.addExistingPhoto(cameraId, existingPhoto); 
+				photoDB.addExistingPhoto(cameraSelector, existingPhoto); 
 			}); 	
 		}
 
-		populatePhotoList(photoContainerId, cameraId); 
-	}
+		populatePhotoList($photoContainer, cameraSelector); 
+	}	
 
-	function populatePhotoList(photoContainerId, cameraId) { 
+	function populatePhotoList($photoContainer, cameraSelector) { 
 		// populate the list of all photos for given camera  
-		photoDB.findPhotosByCameraId(cameraId).then(function(photos) { 
+		photoDB.findPhotosByCameraId(cameraSelector).then(function(photos) { 
 
 		    $.each(photos, function() { 
-				addPhotoToList(photoContainerId, this); 
+				addPhotoToList($photoContainer, this); 
 			}); 
 		}); 
 	}
 
-	function saveSnapshot(cameraId, photoContainerId, imgData) {
+	function saveSnapshot(cameraId, $photoContainer, imgData) {
 
 		var fileName = cameraUtils.newGuid() + ".png"; 
 		var imgObject = { fileName: fileName, content: imgData, cameraId: cameraId };
 
 		photoDB.addNewPhoto(fileName, cameraId, imgData);
 
-		addPhotoToList(photoContainerId, imgObject); 
+		addPhotoToList($photoContainer, imgObject); 
 	} 
 
-	function addPhotoToList(photoContainerId, imageObject) {
+	function addPhotoToList($imagesDiv, imageObject) {
 
-		var $imagesDiv = $("#" + photoContainerId);
 		var $imgDiv = $('<div />').addClass("img").css("height", photoSize.height + "px"); 
 		var $delDiv = $('<div />').addClass("del").attr("data-id", imageObject.fileName); 
 		var $icon = $('<i aria-hidden="true" />').addClass("fa fa-trash-o"); 

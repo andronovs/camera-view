@@ -6,9 +6,9 @@ var cameraDialog = (function() {
 	var $video, $canvas; 
 	var $btnCapture, $btnRetake, $btnSave; 
 
-	function configureForIOS(cameraLinkIOS, cameraId, containerId, saveSnapshotCallback) {
+	function configureForIOS(cameraLinkIOS, cameraSelector, $photoContainer, saveSnapshotCallback) {
 
-		cameraLinkIOS.change((function(cameraId, containerId, callback) {
+		cameraLinkIOS.change((function(cameraSelector, $photoContainer, callback) {
 
 			return function(evt) {
 				var f = evt.target.files[0]; 
@@ -18,22 +18,20 @@ var cameraDialog = (function() {
 
 			    	if (callback) {
 			    		var imgData = theFile.target.result; 
-			    		callback(cameraId, containerId, imgData); 
+			    		callback(cameraSelector, $photoContainer, imgData); 
 			    	}
 			    	else {
 			    		console.warn("Callback is not defined!"); 
 			    	}
 				}; 
 
-				var $cameraContainer = $( "#" + cameraId );
-				var $photoContainer = $cameraContainer.find(".photo-imageset");
-				$photoContainer.removeClass("hidden");			
+				$photoContainer.removeClass("hidden"); 
 
 				// Read in the image file as a data URL.
 				reader.readAsDataURL(f);
 			}; 
 
-		})(cameraId, containerId, saveSnapshotCallback)); 
+		})(cameraSelector, $photoContainer, saveSnapshotCallback)); 
 	}
 
 	function getCameraTemplateHtml() {
@@ -55,7 +53,7 @@ var cameraDialog = (function() {
 			    '</div>'].join('\n'); 
 	}
 
-	function displayCameraDialog(cameraId, containerId, saveSnapshotCallback) { 
+	function displayCameraDialog(cameraSelector, $photoContainer, saveSnapshotCallback) { 
 
         BootstrapDialog.show({
             title: 'Take a photo',
@@ -101,8 +99,6 @@ var cameraDialog = (function() {
 				});
 
 				// display the container? 
-				var $cameraContainer = $( "#" + cameraId );
-				var $photoContainer = $cameraContainer.find(".photo-imageset");
 				$photoContainer.removeClass("hidden"); 
             }, 
             onhidden: function(dialogRef) {
@@ -131,7 +127,7 @@ var cameraDialog = (function() {
 
 			    	if (callback) {
 			    		var imgData = canvas.toDataURL("image/png"); 
-			    		callback(cameraId, containerId, imgData); 
+			    		callback(cameraSelector, $photoContainer, imgData); 
 			    	}
 			    	else {
 			    		console.warn("Callback is not defined!"); 
@@ -182,7 +178,11 @@ var cameraDialog = (function() {
 		
 		if (stream) {
 			stream.getTracks()[0].stop(); 
-			video.src = video.srcObject = "";  
+			if (video.src) {
+				video.src = null; 
+			} 
+
+			stream = null; 
 		}
 	}
 

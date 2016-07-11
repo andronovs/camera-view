@@ -1,10 +1,10 @@
 var Camera = (function() { 
 
-	function Camera(cameraId, existingPhotos) {
-		this.cameraId = cameraId; 
+	function Camera(cameraSelector, existingPhotos) {
+		this.cameraSelector = cameraSelector; 
 		this.existingPhotos = existingPhotos; 
 
-		cameraUI.configureCamera(cameraId, existingPhotos); 
+		cameraUI.configureCamera(cameraSelector, existingPhotos); 
 	}
 
 	Camera.prototype.getPhotos = function() {

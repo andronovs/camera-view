@@ -38,60 +38,68 @@
 
 		function init() { 
 
-			/*var cameraDetails = [{ cameraId: 'camera1', existingPhotos: null }, 
-								{ cameraId: 'camera2', existingPhotos: null }, 
-								{ cameraId: 'camera3', existingPhotos: null}]; 
-			cameraUI.configureCameras(cameraDetails);*/
-			
-			var camera1 = new Camera('camera1', null); 
-			var camera2 = new Camera('camera2', null);  
-			var camera3 = new Camera('camera3', null); 
-
-			camera1.getPhotos().then(function(result) {
-				console.log("Photos for camera:", camera1.cameraId, result); 
-			});   
-		}  
+			var camera11 = new Camera('#parentDiv .camera1:eq(0)', null); 
+			var camera12 = new Camera('#parentDiv .camera1:eq(1)', null); 
+			var camera2 = new Camera('#parentDiv .camera2', null); 
+			var camera3 = new Camera('#parentDiv .camera3', null); 
+		} 
 
 	</script>
 
 </head>
 <body>
 
-	<div id="camera1">
-	    <div class="input-group">
-	        <input type="text" class="form-control" placeholder="Meter Reading 1">
-	        <span class="input-group-addon">
-	        	<a href="javascript:void(0)" class="camera-link"><i class="fa fa-camera" aria-hidden="true"></i></a>
-			    <input type="file" class="camera-link-ios" accept="image/*" capture="camera" />
-	        </span>
-	    </div>
-		<div class="photo-imageset hidden" id="photoImageset1"></div> 
-	</div>
-	<br />
+	<div id="parentDiv">
 
-	<div id="camera2">
-	    <div class="input-group">
-	        <input type="text" class="form-control" placeholder="Meter Reading 2">
-	        <span class="input-group-addon">
-	        	<a href="javascript:void(0)" class="camera-link"><i class="fa fa-camera" aria-hidden="true"></i></a>
-			    <input type="file" class="camera-link-ios" accept="image/*" capture="camera" />
-	        </span>
-	    </div>
-		<div class="photo-imageset hidden" id="photoImageset2"></div> 
-	</div>
-	<br />
+		<div class="camera1">
+		    <div class="input-group">
+		        <input type="text" class="form-control" placeholder="Meter Reading 1">
+		        <span class="input-group-addon">
+		        	<a href="javascript:void(0)" class="camera-link"><i class="fa fa-camera" aria-hidden="true"></i></a>
+				    <input type="file" class="camera-link-ios" accept="image/*" capture="camera" />
+		        </span>
+		    </div>
+			<div class="photo-imageset hidden"></div> 
+		</div>
+		<br />
 
-	<div id="camera3">
-	    <div class="input-group">
-	        <input type="text" class="form-control" placeholder="Meter Reading 3">
-	        <span class="input-group-addon">
-	        	<a href="javascript:void(0)" class="camera-link"><i class="fa fa-camera" aria-hidden="true"></i></a>
-			    <input type="file" class="camera-link-ios" accept="image/*" capture="camera" />
-	        </span>
-	    </div>
-		<div class="photo-imageset hidden" id="photoImageset3"></div> 
+		<div class="camera1">
+		    <div class="input-group">
+		        <input type="text" class="form-control" placeholder="Meter Reading 1">
+		        <span class="input-group-addon">
+		        	<a href="javascript:void(0)" class="camera-link"><i class="fa fa-camera" aria-hidden="true"></i></a>
+				    <input type="file" class="camera-link-ios" accept="image/*" capture="camera" />
+		        </span>
+		    </div>
+			<div class="photo-imageset hidden"></div> 
+		</div>
+		<br />
+
+		<div class="camera2">
+		    <div class="input-group">
+		        <input type="text" class="form-control" placeholder="Meter Reading 2">
+		        <span class="input-group-addon">
+		        	<a href="javascript:void(0)" class="camera-link"><i class="fa fa-camera" aria-hidden="true"></i></a>
+				    <input type="file" class="camera-link-ios" accept="image/*" capture="camera" />
+		        </span>
+		    </div>
+			<div class="photo-imageset hidden"></div> 
+		</div>
+		<br />
+
+		<div class="camera3">
+		    <div class="input-group">
+		        <input type="text" class="form-control" placeholder="Meter Reading 3">
+		        <span class="input-group-addon">
+		        	<a href="javascript:void(0)" class="camera-link"><i class="fa fa-camera" aria-hidden="true"></i></a>
+				    <input type="file" class="camera-link-ios" accept="image/*" capture="camera" />
+		        </span>
+		    </div>
+			<div class="photo-imageset hidden"></div> 
+		</div>
+		<br />
+
 	</div>
-	<br />
 
 </body>
 </html>

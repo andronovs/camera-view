@@ -81,6 +81,7 @@ var photoDB = (function() {
         return p; 
     }
 
+    // Here cameraId is a valid JQuery camera selector. 
     function findPhotosByCameraId(cameraId) {  
 
         var p = new Promise(function(resolve, reject) {
