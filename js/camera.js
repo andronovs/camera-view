@@ -9,7 +9,7 @@ var Camera = (function() {
 
 	Camera.prototype.getPhotos = function() {
 		
-		return photoDB.findPhotosByCameraId(this.cameraId); 
+		return photoDB.findPhotosByCameraId(this.cameraSelector); 
 	}; 
 
 	return Camera; 
