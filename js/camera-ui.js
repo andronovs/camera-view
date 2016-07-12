@@ -33,11 +33,12 @@ var cameraUI = (function() {
 		var $cameraLinkIOS = $cameraContainer.find(".camera-link-ios"); 
 
 		var iOS = cameraUtils.isIOS(); 
-		var getDisplayValue = function(isVisible) {
-			return isVisible? "" : "none"; 
-		}; 
-		$cameraLinkIOS.css("display", getDisplayValue(iOS)); 
-		$cameraLink.css("display", getDisplayValue(!iOS)); 
+		if (iOS) {
+			$cameraLink.addClass("hidden"); 
+		}
+		else {
+			$cameraLinkIOS.addClass("hidden"); 
+		}
 
 		if ($photoContainer) {
 			cameraDialog.configureForIOS($cameraLinkIOS, cameraSelector, $photoContainer, saveSnapshot); 
