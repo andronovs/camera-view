@@ -39,9 +39,10 @@ var cameraDialog = (function() {
 		return ['<div id="camera-dialog">', 
 			        '<form name="cameraForm">',
 			            '<img src="img/spinner.gif" class="spinner" />',  
+			            '<div class="errorMessage"></div>', 
 			            '<div class="row">',
 			                '<div class="col-sm-12">',
-			                	'<video id="dataVideoId" autoplay style="width:100%" width="100%"></video>',
+			                	'<video id="dataVideoId" autoplay style="width:100%" width="100%"></video>',			                	
 			                '</div>',
 			            '</div>', 
 			            '<div class="row">',
@@ -95,7 +96,13 @@ var cameraDialog = (function() {
 					video.src = window.URL.createObjectURL(stream); 
 				})
 				.catch(function (error) {
-				 	console.warn('navigator.getUserMedia error: ', error);
+					var $spinner = body.find(".spinner"); 
+					$spinner.hide(); 
+
+					var $errorMessage = body.find(".errorMessage"); 
+					$errorMessage.text("Error detected: " + error.name); 
+
+				 	console.warn('navigator.getUserMedia error: ', error); 
 				});
 
 				// display the container? 
