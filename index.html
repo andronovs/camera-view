@@ -22,10 +22,13 @@
     <link href="css/bootstrap.css" rel="stylesheet">
     <link href="css/bootstrap-dialog.css" rel="stylesheet">
     <link href="css/camera.css" rel="stylesheet">
+    <link href="css/jquery.timepicker.css" rel="stylesheet">
 
     <script src="js/vendor/jquery-2.1.4.js"></script>
+    <script src="js/vendor/jquery-ui.min.js"></script>
     <script src="js/vendor/bootstrap.js"></script>
     <script src="js/vendor/bootstrap-dialog.js"></script>
+    <script src="js/vendor/jquery.timepicker.js"></script>
 
 	<script src="js/vendor/ydn.db-is-core-qry.min.js"></script>
 	<script src="js/vendor/adapter.js"></script>
@@ -42,6 +45,9 @@
 			var camera12 = new Camera('#parentDiv .camera1:eq(1)', null); 
 			var camera2 = new Camera('#parentDiv .camera2', null); 
 			var camera3 = new Camera('#parentDiv .camera3', null); 
+
+	        //set task date picker date to current date
+	        $('#txtTaskDatePicker').datepicker({ dateFormat: 'yy-mm-dd' }).datepicker('setDate', new Date()); 
 		} 
 
 	</script>
@@ -50,6 +56,20 @@
 <body>
 
 	<div id="parentDiv">
+
+        <div class="form-group field-task-essential">
+            <label for="txtTaskDatePicker">Date</label>
+
+            <div class="input-group" id="taskDatePickerGroup">
+                <input id="txtTaskDatePicker" type="text" class="form-control" placeholder="yyyy-mm-dd e.g.: 2016-12-23">
+                <span class="input-group-btn">
+                    <button id="btnTaskDatePicker" class="btn btn-default" type="button">
+                        <span class="glyphicon glyphicon-calendar" aria-hidden="true"></span>
+                    </button>
+                </span>
+            </div>
+            <div class="validation-error"></div>
+        </div> 		
 
 		<div class="camera1">
 		    <div class="input-group">
